@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Gallery - Museum Of Moments</title>
+    <link rel="preload" href="https://wallpaperaccess.com/full/6451647.png" as="image">
+    <link rel="preconnect" href="https://wallpaperaccess.com">
+    <link rel="stylesheet" href="galaxy.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="stars"></div>
+
+    <!-- Navbar Section -->
+    <nav class="navbar">
+        <div class="social-icons">
+            <a href="https://www.instagram.com/kkarthhikk" target="_blank">
+                <img src="https://img.icons8.com/?size=48&id=DpOQ6G5p47f0&format=png" alt="Instagram">
+            </a>
+            <a href="https://www.linkedin.com/in/karthik-prasad-m-7673b5356/" target="_blank">
+                <img src="https://img.icons8.com/?size=100&id=447&format=png" alt="LinkedIn">
+            </a>
+            <a href="https://pin.it/70AOzYsfW" target="_blank">
+                <img src="https://img.icons8.com/?size=48&id=CeRsUJCNL4go&format=png" alt="Pinterest">
+            </a>
+            <a href="https://open.spotify.com/user/31g54rthdkjwc7tk2yzwlkptbbqi" target="_blank">
+                <img src="https://img.icons8.com/?size=100&id=6707&format=png" alt="Spotify">
+            </a>
+        </div>
+
+        <h2 class="logo"></h2>
+
+        <!-- Desktop/Tablet Menu -->
+        <div class="dropdown desktop-menu">
+            <button class="dropbtn">Menu</button>
+            <div class="dropdown-content">
+                <a href="#">Know Me <3</a>
+                <a href="upload.html">Image Upload</a>
+
+            
+          </div>
+        </div>
+
+        <!-- Mobile Hamburger Menu -->
+        <div class="hamburger-menu" id="hamburgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <!-- Mobile Dropdown Menu (Hamburger) -->
+        <div class="mobile-dropdown" id="mobileDropdown">
+            <a href="#">Know me <3</a>
+            <a href="upload.html">Image Upload</a>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div class="mobile-nav" id="navbarMenu">
+            <a hred="index.html" id="backtoGallery">Back To Gallery</a>
+            <a href="#">Know Me <3</a>
+                <a href="upload.html">Image Upload</a>
+        </div>
+
+        <!-- Slideshow Toggle Button -->
+        <button id="slideshowToggle" class="moon-button">🌙</button>
+    </nav>
+
+    <!-- Main Image Display Section -->
+    <div class="container">
+        <div class="main-image">
+            <img id="displayedImage" src="https://wallpaperaccess.com/full/6451647.png" alt="Main Image">
+        </div>
+
+        <div class="thumbnails">
+            <img class="thumb active" src="placeholder.jpg" data-src="https://wallpaperaccess.com/full/640842.jpg" alt="Pic 1">
+            <img class="thumb" src="placeholder.jpg" data-src="https://wallpaperaccess.com/full/6451439.jpg" alt="Pic 2">
+            <img class="thumb" src="placeholder.jpg" data-src="https://wallpaperaccess.com/full/6451552.jpg" alt="Pic 3">
+            <img class="thumb" src="placeholder.jpg" data-src="https://wallpaperaccess.com/full/1588.jpg" alt="Pic 4">
+        </div>
+
+        <!-- Video Section -->
+        <div class="video-container">
+            <video id="displayedVideo" controls>
+                <source src="https://media-hosting.imagekit.io/aa0d2db4e4a042a6/beautiful.mp4?Expires=1838890187&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=rVPKd-bR2wt1GYltcdgFwgDj-d4OgOCLgScIwO2OKDjO9DRd7ZVHhv~EkKUZxwDFnWbD-v1eXizhPEWGTFpuQPQLfHryEMaOdzF9wqGo1EyuYkcJymOihqpYP2VuLG-dyVyWH6ktyes0fVOBuXpj-y2rNkMxWTUQxVE0vtc2aQvO5Zb-x8XSW4XtDOVz3IWqYYGRMzAiCj3ZJ92ckTVGFhIL~ZrTAibizem8P1i6yFF2kZnOGOq1kt20D94cXWjtwLh1TRkrCXNJXEcHnCOXRBCoLTIDBJbzXYTOwbFDo3O--dwWtiG755Jju-cIgfGZzcSJ1XooxoxgphntsuNUXQ__" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="video-thumbnails">
+            <img class="video-thumb active" src="https://media-hosting.imagekit.io/32947a9ca4644001/efficiency%20kills%20love.jpg?Expires=1838890671&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=BGF41TVmTt9bx7Q8EudK1ON88dqv8bHFLIKyyO1ZRdzwHGRstDptziDxCDEPR~QhaD9Lm9z9XysDHPUNLTbNXdmjWs-UKKobYCc8--RvanPmIxQeMjmxC4M45U8jzSj-Rz~6udMgYVBEcAmwn6va0NpUbhf38PnnwLe7IPT5m-gDcDWPclQ5cYY8lkt9MNVUTRo8NMqYSnGlAtFoGbkksOdiBz4N4PFTe29loN8o7-q6e1wQQ8U1Zw0Vz62pj4LXETOQhdsjHVtbJ-y1izpC-14OkuxguecLBBuAnrPIBGluNbKrGdurX0gC~MiB0BmovQf2IVucVQq10bgzQTPpOg__" alt="Video 1" data-src="https://media-hosting.imagekit.io/32947a9ca4644001/efficiency%20kills%20love.jpg?Expires=1838890671&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=BGF41TVmTt9bx7Q8EudK1ON88dqv8bHFLIKyyO1ZRdzwHGRstDptziDxCDEPR~QhaD9Lm9z9XysDHPUNLTbNXdmjWs-UKKobYCc8--RvanPmIxQeMjmxC4M45U8jzSj-Rz~6udMgYVBEcAmwn6va0NpUbhf38PnnwLe7IPT5m-gDcDWPclQ5cYY8lkt9MNVUTRo8NMqYSnGlAtFoGbkksOdiBz4N4PFTe29loN8o7-q6e1wQQ8U1Zw0Vz62pj4LXETOQhdsjHVtbJ-y1izpC-14OkuxguecLBBuAnrPIBGluNbKrGdurX0gC~MiB0BmovQf2IVucVQq10bgzQTPpOg__">
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+
+</body>
+</html>

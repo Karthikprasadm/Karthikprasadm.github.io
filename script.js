@@ -1,0 +1,257 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const thumbnails = document.querySelectorAll(".thumb");
+    const videoThumbnails = document.querySelectorAll(".video-thumb");
+    const displayedImage = document.getElementById("displayedImage");
+    const displayedVideo = document.getElementById("displayedVideo");
+    const slideshowToggle = document.getElementById("slideshowToggle");
+    const hamburgerMenu = document.getElementById("hamburgerMenu");
+    const mobileDropdown = document.getElementById("mobileDropdown");
+    
+    let slideshowInterval;
+    let isSlideshowActive = false;
+    const imageList = Array.from(thumbnails).map(thumb => thumb.getAttribute("data-src"));
+    let currentIndex = 0;
+
+    // Enhanced Hamburger menu functionality with dropdown
+    hamburgerMenu.addEventListener("click", function(e) {
+        e.stopPropagation();
+        this.classList.toggle("active");
+        mobileDropdown.classList.toggle("active");
+        document.body.classList.toggle("menu-open");
+        
+        // Close when clicking outside
+        if (mobileDropdown.classList.contains("active")) {
+            document.addEventListener("click", closeMenu);
+        } else {
+            document.removeEventListener("click", closeMenu);
+        }
+    });
+
+    function closeMenu(e) {
+        if (!mobileDropdown.contains(e.target) && !hamburgerMenu.contains(e.target)) {
+            hamburgerMenu.classList.remove("active");
+            mobileDropdown.classList.remove("active");
+            document.body.classList.remove("menu-open");
+            document.removeEventListener("click", closeMenu);
+        }
+    }
+
+    // Close menu when clicking on a link
+    if (mobileDropdown) {
+        mobileDropdown.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                hamburgerMenu.classList.remove("active");
+                mobileDropdown.classList.remove("active");
+                document.body.classList.remove("menu-open");
+            });
+        });
+    }
+
+    // Close menu when window is resized to desktop width
+    window.addEventListener("resize", function() {
+        if (window.innerWidth > 768) {
+            if (mobileDropdown && mobileDropdown.classList.contains("active")) {
+                hamburgerMenu.classList.remove("active");
+                mobileDropdown.classList.remove("active");
+                document.body.classList.remove("menu-open");
+            }
+        }
+    });
+
+    // Lazy load thumbnails
+    const lazyLoad = (thumb) => {
+        const src = thumb.getAttribute("data-src");
+        thumb.setAttribute("src", src);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                lazyLoad(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    });
+
+    thumbnails.forEach(thumb => observer.observe(thumb));
+    videoThumbnails.forEach(thumb => observer.observe(thumb));
+
+    // Change image function
+    function changeImage(thumbnail, imageUrl) {
+        displayedImage.style.opacity = "0";
+        setTimeout(() => {
+            displayedImage.src = imageUrl;
+            displayedImage.style.opacity = "1";
+        }, 300);
+
+        thumbnails.forEach(thumb => thumb.classList.remove("active"));
+        thumbnail.classList.add("active");
+    }
+
+    // Event delegation for thumbnails
+    document.querySelector(".thumbnails").addEventListener("click", function (e) {
+        if (e.target.classList.contains("thumb")) {
+            const imageUrl = e.target.getAttribute("data-src");
+            changeImage(e.target, imageUrl);
+            stopSlideshow(); // Stop slideshow when manually changing images
+        }
+    });
+
+    // Video functionality
+    function changeVideo(thumbnail, videoUrl) {
+        displayedVideo.src = videoUrl;
+        displayedVideo.load();
+        
+        // Add error handling for video loading
+        displayedVideo.onerror = function() {
+            console.error("Error loading video:", videoUrl);
+        };
+        
+        displayedVideo.play().catch(e => {
+            console.warn("Auto-play prevented:", e);
+        });
+        
+        videoThumbnails.forEach(thumb => thumb.classList.remove("active"));
+        thumbnail.classList.add("active");
+    }
+
+    document.querySelector(".video-thumbnails").addEventListener("click", function (e) {
+        if (e.target.classList.contains("video-thumb")) {
+            const videoUrl = e.target.getAttribute("data-src");
+            changeVideo(e.target, videoUrl);
+        }
+    });
+
+    // Slideshow functions
+    function startSlideshow() {
+        slideshowInterval = setInterval(() => {
+            currentIndex = (currentIndex + 1) % imageList.length;
+            const nextThumbnail = thumbnails[currentIndex];
+            changeImage(nextThumbnail, imageList[currentIndex]);
+        }, 3500);
+    }
+
+    function stopSlideshow() {
+        clearInterval(slideshowInterval);
+        isSlideshowActive = false;
+        slideshowToggle.textContent = "🌙";
+    }
+
+    // Slideshow toggle
+    slideshowToggle.addEventListener("click", function () {
+        isSlideshowActive = !isSlideshowActive;
+        this.textContent = isSlideshowActive ? "🌕" : "🌙";
+        if (isSlideshowActive) {
+            startSlideshow();
+        } else {
+            stopSlideshow();
+        }
+    });
+
+    // Double-click to enter fullscreen
+    displayedImage.addEventListener("dblclick", function () {
+        toggleFullscreen(this);
+    });
+
+    // Add fullscreen capability to video as well
+    displayedVideo.addEventListener("dblclick", function() {
+        toggleFullscreen(this);
+    });
+
+    function toggleFullscreen(element) {
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch((err) => {
+                console.error(`Error exiting fullscreen: ${err.message}`);
+            });
+        } else {
+            if (element.requestFullscreen) {
+                element.requestFullscreen().catch((err) => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+        }
+    }
+
+    // Handle fullscreen change events
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
+
+    function handleFullscreenChange() {
+        if (document.fullscreenElement) {
+            document.fullscreenElement.classList.add("fullscreen");
+        } else {
+            document.querySelectorAll(".fullscreen").forEach(element => {
+                element.classList.remove("fullscreen");
+            });
+        }
+    }
+
+    // Preload main image for faster initial loading
+    const mainImage = new Image();
+    mainImage.src = displayedImage.src;
+});
+
+// Moved from server.js: Frontend file upload handling
+
+document.addEventListener("DOMContentLoaded", function () {
+    const fileInput = document.getElementById("fileInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const progressBar = document.getElementById("progressBar");
+
+    uploadBtn.addEventListener("click", function () {
+        if (fileInput.files.length === 0) {
+            alert("Please select files to upload.");
+            return;
+        }
+
+        const formData = new FormData();
+        for (let i = 0; i < fileInput.files.length; i++) {
+            if (fileInput.files[i].size > 150 * 1024 * 1024) {
+                alert(`File "${fileInput.files[i].name}" exceeds 150MB and cannot be uploaded.`);
+                return;
+            }
+            formData.append("media", fileInput.files[i]);
+        }
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/upload", true);
+
+        // Progress event
+        xhr.upload.onprogress = function (event) {
+            if (event.lengthComputable) {
+                let progress = (event.loaded / event.total) * 100;
+                progressBar.style.width = progress + "%";
+                progressBar.style.background = "#00ff00";
+            }
+        };
+
+        // Upload complete
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert("Upload Complete!");
+                progressBar.style.width = "100%";
+            } else {
+                const errorMessage = `Upload Failed: ${xhr.responseText}`;
+                document.getElementById('error-message').innerText = errorMessage;
+                progressBar.style.background = "red";
+            }
+        };
+
+        // Error handling
+        xhr.onerror = function () {
+            alert("An error occurred while uploading.");
+            progressBar.style.background = "red";
+        };
+
+        // Send the request
+        xhr.send(formData);
+    });
+});

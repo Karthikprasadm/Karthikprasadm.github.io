@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Media</title>
+    <link rel="stylesheet" href="galaxy.css">
+    <link rel="stylesheet" href="upload.css">
+</head>
+<body>
+    <div class="stars"></div>
+    <nav class="navbar">
+        <div class="social-icons">
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/kkarthhikk" target="_blank">
+                <img src="https://img.icons8.com/?size=48&id=DpOQ6G5p47f0&format=png" alt="Instagram" loading="lazy">
+            </a>
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/yourprofile" target="_blank">
+                <img src="https://img.icons8.com/?size=100&id=447&format=png" alt="LinkedIn" loading="lazy">
+            </a>
+            <!-- Pinterest -->
+            <a href="https://pin.it/70AOzYsfW" target="_blank">
+                <img src="https://img.icons8.com/?size=48&id=CeRsUJCNL4go&format=png" alt="Pinterest" loading="lazy">
+            </a>
+            <!-- Spotify -->
+            <a href="https://open.spotify.com/user/31g54rthdkjwc7tk2yzwlkptbbqi" target="_blank">
+                <img src="https://img.icons8.com/?size=100&id=6707&format=png" alt="Spotify" loading="lazy">
+            </a>
+        </div>
+
+        <h2 class="logo"></h2>
+
+        <div class="dropdown">
+            <button class="dropbtn" aria-label="Open menu">Menu</button>
+            <div class="dropdown-content">
+                <a href="index.html" id="backToGallery">Back to Gallery</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="upload-container">
+        <h1>Upload Your Media</h1>
+        <form id="uploadForm" class="upload-form">
+            <label for="mediaUpload" class="custom-file-upload">Choose Photos/Videos</label>
+            <input type="file" id="mediaUpload" name="media" accept="image/*, video/*" multiple>
+
+            <button type="button" id="uploadButton" aria-label="Upload Media">Upload</button>
+
+            <div id="progressBar" class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+        </form>
+
+        <div id="preview"></div>
+        <div id="uploadedMedia" class="gallery"></div>
+    </div>
+
+    <!-- Bottom-left text -->
+    <div class="bottom-left-text">
+        &copy; 2025 Museum Of Moments. All rights reserved.
+    </div>
+
+    <script>
+        const mediaUpload = document.getElementById("mediaUpload");
+        const preview = document.getElementById("preview");
+        const uploadedMedia = document.getElementById("uploadedMedia");
+        const uploadButton = document.getElementById("uploadButton");
+        const progressBar = document.getElementById("progress");
+        const errorMessage = document.getElementById("errorMessage");
+
+        const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+        const ALLOWED_TYPES = ["image/jpeg", "image/png", "video/mp4"];
+
+        const IMAGEKIT_URL = "https://upload.imagekit.io/api/v1/files/upload";
+        const IMAGEKIT_PUBLIC_KEY = "your_public_api_key"; // Replace with your ImageKit public API key
+        const IMAGEKIT_AUTH_ENDPOINT = "/auth"; // Backend endpoint for authentication (to be implemented)
+
+        function displayUploadedMedia(files) {
+            uploadedMedia.innerHTML = "";
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const mediaElement = document.createElement(file.type.startsWith("image") ? "img" : "video");
+                    mediaElement.src = e.target.result;
+                    mediaElement.alt = "Uploaded Media";
+                    mediaElement.classList.add("gallery-media");
+
+                    if (file.type.startsWith("video")) {
+                        mediaElement.controls = true;
+                    }
+
+                    uploadedMedia.appendChild(mediaElement);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        mediaUpload.addEventListener("change", function () {
+            const files = Array.from(this.files);
+            errorMessage.textContent = "";
+
+            if (files.length === 0) {
+                preview.innerHTML = "";
+                return;
+            }
+
+            let isValid = true;
+            files.forEach(file => {
+                if (!ALLOWED_TYPES.includes(file.type) || file.size > MAX_FILE_SIZE) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                errorMessage.textContent = "Invalid file type or size (max 10MB).";
+                this.value = "";
+                preview.innerHTML = "";
+            } else {
+                preview.innerHTML = `<p>${files.length} file(s) selected.</p>`;
+            }
+        });
+
+        uploadButton.addEventListener("click", async function () {
+            const files = mediaUpload.files;
+            if (files.length === 0) {
+                preview.innerHTML = `<p>Please select a file before uploading.</p>`;
+                return;
+            }
+
+            try {
+                for (const file of files) {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("fileName", file.name);
+
+                    const response = await fetch(IMAGEKIT_URL, {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Basic ${btoa(IMAGEKIT_PUBLIC_KEY + ":")}`
+                        },
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        const mediaElement = document.createElement(file.type.startsWith("image") ? "img" : "video");
+                        mediaElement.src = result.url;
+                        mediaElement.alt = "Uploaded Media";
+                        mediaElement.classList.add("gallery-media");
+
+                        if (file.type.startsWith("video")) {
+                            mediaElement.controls = true;
+                        }
+
+                        uploadedMedia.appendChild(mediaElement);
+                        preview.innerHTML = `<p>Upload complete!</p>`;
+                    } else {
+                        const error = await response.json();
+                        preview.innerHTML = `<p class="error-message">Upload failed: ${error.message}</p>`;
+                    }
+                }
+            } catch (error) {
+                preview.innerHTML = `<p class="error-message">Error: ${error.message}</p>`;
+            }
+        });
+
+        const uploadForm = document.querySelector(".upload-form");
+        uploadForm.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            uploadForm.classList.add("dragover");
+        });
+
+        uploadForm.addEventListener("dragleave", () => {
+            uploadForm.classList.remove("dragover");
+        });
+
+        uploadForm.addEventListener("drop", (e) => {
+            e.preventDefault();
+            uploadForm.classList.remove("dragover");
+            mediaUpload.files = e.dataTransfer.files;
+            mediaUpload.dispatchEvent(new Event("change"));
+        });
+    </script>
+</body>
+</html>
