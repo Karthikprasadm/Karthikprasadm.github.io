@@ -11,6 +11,8 @@ function isAllowedOrigin(origin) {
 module.exports = (req, res) => {
   try {
     const origin = req.headers.origin;
+    // Debug log to check what origin is being received
+    console.log("Request origin:", origin);
     if (isAllowedOrigin(origin)) {
       res.setHeader("Access-Control-Allow-Origin", origin);
     }
