@@ -67,13 +67,51 @@
         &copy; 2025 Museum Of Moments. All rights reserved.
     </div>
 
+    <script src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
+    <script>
+        // ImageKit direct upload logic
+        const SIGNATURE_ENDPOINT = "https://karthikprasadm-github-cgf5kj5uk-karthik-prasad-ms-projects.vercel.app/api/signature";
+        const ikUploadButton = document.getElementById("uploadButton");
+        const ikMediaUpload = document.getElementById("mediaUpload");
+        const ikProgressBar = document.getElementById("progress");
+        const ikPreview = document.getElementById("preview");
+        const ikErrorMessage = document.getElementById("errorMessage");
+        const imagekit = new ImageKit({
+            publicKey: "public_QadH3cW1AFwIaqSz6iRkSiGl6PM=", 
+            urlEndpoint: "https://ik.imagekit.io/ijv7nmfqx" 
+        });
+        async function getSignature() {
+            const res = await fetch(SIGNATURE_ENDPOINT);
+            return await res.json();
+        }
+        ikUploadButton.addEventListener("click", async function () {
+            const files = ikMediaUpload.files;
+            if (files.length === 0) {
+                ikPreview.innerHTML = `<p>Please select a file before uploading.</p>`;
+                return;
+            }
+            const sigData = await getSignature();
+            const file = files[0];
+            imagekit.upload({
+                file: file,
+                fileName: file.name,
+                signature: sigData.signature,
+                expire: sigData.expire,
+                token: sigData.token
+            }, function(err, result) {
+                if (err) {
+                    ikPreview.innerHTML = `<p class='error-message'>Upload failed: ${err.message}</p>`;
+                } else {
+                    ikPreview.innerHTML = `<p>Upload success! File URL: <a href='${result.url}' target='_blank'>${result.url}</a></p>`;
+                }
+            });
+        });
+    </script>
+
     <script>
         const mediaUpload = document.getElementById("mediaUpload");
         const preview = document.getElementById("preview");
         const uploadedMedia = document.getElementById("uploadedMedia");
-        const uploadButton = document.getElementById("uploadButton");
-        const progressBar = document.getElementById("progress");
-        const errorMessage = document.getElementById("errorMessage");
 
         const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
         const ALLOWED_TYPES = ["image/jpeg", "image/png", "video/mp4"];
@@ -100,6 +138,7 @@
 
         mediaUpload.addEventListener("change", function () {
             const files = Array.from(this.files);
+            const errorMessage = document.getElementById("errorMessage");
             errorMessage.textContent = "";
 
             if (files.length === 0) {
@@ -120,43 +159,6 @@
                 preview.innerHTML = "";
             } else {
                 preview.innerHTML = `<p>${files.length} file(s) selected.</p>`;
-            }
-        });
-
-        uploadButton.addEventListener("click", async function () {
-            const files = mediaUpload.files;
-            if (files.length === 0) {
-                preview.innerHTML = `<p>Please select a file before uploading.</p>`;
-                return;
-            }
-
-            const formData = new FormData();
-            Array.from(files).forEach(file => formData.append("media", file));
-
-            try {
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", "/upload", true);
-
-                xhr.upload.onprogress = (event) => {
-                    if (event.lengthComputable) {
-                        const percent = (event.loaded / event.total) * 100;
-                        progressBar.style.width = `${percent}%`;
-                    }
-                };
-
-                xhr.onload = () => {
-                    if (xhr.status === 200) {
-                        displayUploadedMedia(files);
-                        preview.innerHTML = `<p>Upload complete!</p>`;
-                    } else {
-                        preview.innerHTML = `<p class="error-message">Upload failed :( ${xhr.responseText}</p>`;
-                    }
-                    progressBar.style.width = "0";
-                };
-
-                xhr.send(formData);
-            } catch (error) {
-                preview.innerHTML = `<p class="error-message">Error: ${error.message}</p>`;
             }
         });
 
