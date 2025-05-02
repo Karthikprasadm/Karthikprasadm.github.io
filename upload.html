@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,6 +27,9 @@
             <!-- Spotify -->
             <a href="https://open.spotify.com/user/31g54rthdkjwc7tk2yzwlkptbbqi" target="_blank">
                 <img src="https://img.icons8.com/?size=100&id=6707&format=png" alt="Spotify" loading="lazy">
+            </a>
+            <a href="https://github.com/Karthikprasadm" target="_blank">
+                <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="github">
             </a>
         </div>
 
@@ -73,10 +77,6 @@
 
         const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
         const ALLOWED_TYPES = ["image/jpeg", "image/png", "video/mp4"];
-
-        const IMAGEKIT_URL = "https://upload.imagekit.io/api/v1/files/upload";
-        const IMAGEKIT_PUBLIC_KEY = "your_public_api_key"; // Replace with your ImageKit public API key
-        const IMAGEKIT_AUTH_ENDPOINT = "/auth"; // Backend endpoint for authentication (to be implemented)
 
         function displayUploadedMedia(files) {
             uploadedMedia.innerHTML = "";
@@ -130,38 +130,31 @@
                 return;
             }
 
+            const formData = new FormData();
+            Array.from(files).forEach(file => formData.append("media", file));
+
             try {
-                for (const file of files) {
-                    const formData = new FormData();
-                    formData.append("file", file);
-                    formData.append("fileName", file.name);
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/upload", true);
 
-                    const response = await fetch(IMAGEKIT_URL, {
-                        method: "POST",
-                        headers: {
-                            Authorization: `Basic ${btoa(IMAGEKIT_PUBLIC_KEY + ":")}`
-                        },
-                        body: formData
-                    });
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable) {
+                        const percent = (event.loaded / event.total) * 100;
+                        progressBar.style.width = `${percent}%`;
+                    }
+                };
 
-                    if (response.ok) {
-                        const result = await response.json();
-                        const mediaElement = document.createElement(file.type.startsWith("image") ? "img" : "video");
-                        mediaElement.src = result.url;
-                        mediaElement.alt = "Uploaded Media";
-                        mediaElement.classList.add("gallery-media");
-
-                        if (file.type.startsWith("video")) {
-                            mediaElement.controls = true;
-                        }
-
-                        uploadedMedia.appendChild(mediaElement);
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        displayUploadedMedia(files);
                         preview.innerHTML = `<p>Upload complete!</p>`;
                     } else {
-                        const error = await response.json();
-                        preview.innerHTML = `<p class="error-message">Upload failed: ${error.message}</p>`;
+                        preview.innerHTML = `<p class="error-message">Upload failed :( ${xhr.responseText}</p>`;
                     }
-                }
+                    progressBar.style.width = "0";
+                };
+
+                xhr.send(formData);
             } catch (error) {
                 preview.innerHTML = `<p class="error-message">Error: ${error.message}</p>`;
             }

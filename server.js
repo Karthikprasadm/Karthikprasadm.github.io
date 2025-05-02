@@ -1,9 +1,17 @@
 // Backend: Express.js Server with Multer for File Uploads
+require('dotenv').config();
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const ImageKit = require("imagekit");
+const ImageKit = require('imagekit');
+
+// Configure ImageKit
+const imagekit = new ImageKit({
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
+});
 
 const app = express();
 const port = 3000;
@@ -42,58 +50,55 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter, limits: { fileSize: 150 * 1024 * 1024 } }); // 150MB limit
 
-// Configure ImageKit
-const imagekit = new ImageKit({
-    publicKey: "public_QadH3cW1AFwIaqSz6iRkSiGl6PM=",
-    privateKey: "private_82476YlmiHpRs9nrN6CAJIe0cfk=",
-    urlEndpoint: "https://ik.imagekit.io/ijv7nmfqx/"
-});
-
-// Serve static files (e.g., HTML, CSS, JS)
+// Serve static files (e.g., HTML, CSS, JS) from the project root
 app.use(express.static(__dirname));
 
-// Explicitly serve the index.html file for the root path
+// Serve index.html on root request
 app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'index.html'));
+  res.sendFile(__dirname + '/index.html');
 });
 
-// Endpoint to provide ImageKit authentication parameters
-app.get("/auth", (req, res) => {
-    const authenticationParameters = imagekit.getAuthenticationParameters();
-    res.json(authenticationParameters);
-});
-
-// Update the /upload endpoint to upload files to ImageKit
-app.post("/upload", upload.single("media"), async (req, res) => {
-    console.log("File received:", req.file); // Debugging log
-    if (!req.file) {
-        return res.status(400).send("No file uploaded.");
+// ImageKit upload handler for /upload endpoint
+app.post('/upload', upload.array('media'), async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).send('No files uploaded.');
     }
-
-    try {
-        // Read the uploaded file
-        const fileBuffer = fs.readFileSync(req.file.path);
-
+    const uploadResults = [];
+    for (const file of req.files) {
+      try {
+        // Log file info
+        console.log('Uploading file:', file.originalname);
         // Upload to ImageKit
         const result = await imagekit.upload({
-            file: fileBuffer, // File buffer
-            fileName: req.file.originalname, // Original file name
-            folder: "/Upload M-O-M" // Folder in ImageKit
+          file: fs.readFileSync(file.path),
+          fileName: file.originalname,
+          folder: '/Upload_M-O-M' // Try removing this if files don't show up
         });
-
-        // Delete the temporary file
-        fs.unlinkSync(req.file.path);
-
-        // Respond with the uploaded file URL
-        res.json({
-            success: true,
-            url: result.url,
-            fileId: result.fileId
+        console.log('ImageKit upload result:', result);
+        if (!result.url || !result.fileId) {
+          throw new Error('ImageKit did not return a valid URL or fileId');
+        }
+        uploadResults.push({
+          originalname: file.originalname,
+          url: result.url,
+          fileId: result.fileId,
+          type: result.type
         });
-    } catch (error) {
-        console.error("Error uploading to ImageKit:", error);
-        res.status(500).send("Error uploading file.");
+      } catch (ikErr) {
+        console.error('Failed to upload to ImageKit:', ikErr);
+        // Optionally, you can return here to stop on first failure
+        return res.status(500).send(`Failed to upload file ${file.originalname} to ImageKit: ${ikErr.message}`);
+      } finally {
+        // Always delete the local file
+        fs.unlinkSync(file.path);
+      }
     }
+    res.status(200).json({ message: 'Files uploaded to ImageKit!', files: uploadResults });
+  } catch (err) {
+    console.error('ImageKit upload error:', err);
+    res.status(500).send(`Failed to upload files to ImageKit: ${err.message}`);
+  }
 });
 
 // Error handling for file uploads

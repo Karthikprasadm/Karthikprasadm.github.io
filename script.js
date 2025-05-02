@@ -1,62 +1,12 @@
+
 document.addEventListener("DOMContentLoaded", function () {
     const thumbnails = document.querySelectorAll(".thumb");
-    const videoThumbnails = document.querySelectorAll(".video-thumb");
     const displayedImage = document.getElementById("displayedImage");
-    const displayedVideo = document.getElementById("displayedVideo");
     const slideshowToggle = document.getElementById("slideshowToggle");
-    const hamburgerMenu = document.getElementById("hamburgerMenu");
-    const mobileDropdown = document.getElementById("mobileDropdown");
-    
     let slideshowInterval;
     let isSlideshowActive = false;
     const imageList = Array.from(thumbnails).map(thumb => thumb.getAttribute("data-src"));
     let currentIndex = 0;
-
-    // Enhanced Hamburger menu functionality with dropdown
-    hamburgerMenu.addEventListener("click", function(e) {
-        e.stopPropagation();
-        this.classList.toggle("active");
-        mobileDropdown.classList.toggle("active");
-        document.body.classList.toggle("menu-open");
-        
-        // Close when clicking outside
-        if (mobileDropdown.classList.contains("active")) {
-            document.addEventListener("click", closeMenu);
-        } else {
-            document.removeEventListener("click", closeMenu);
-        }
-    });
-
-    function closeMenu(e) {
-        if (!mobileDropdown.contains(e.target) && !hamburgerMenu.contains(e.target)) {
-            hamburgerMenu.classList.remove("active");
-            mobileDropdown.classList.remove("active");
-            document.body.classList.remove("menu-open");
-            document.removeEventListener("click", closeMenu);
-        }
-    }
-
-    // Close menu when clicking on a link
-    if (mobileDropdown) {
-        mobileDropdown.querySelectorAll("a").forEach(link => {
-            link.addEventListener("click", () => {
-                hamburgerMenu.classList.remove("active");
-                mobileDropdown.classList.remove("active");
-                document.body.classList.remove("menu-open");
-            });
-        });
-    }
-
-    // Close menu when window is resized to desktop width
-    window.addEventListener("resize", function() {
-        if (window.innerWidth > 768) {
-            if (mobileDropdown && mobileDropdown.classList.contains("active")) {
-                hamburgerMenu.classList.remove("active");
-                mobileDropdown.classList.remove("active");
-                document.body.classList.remove("menu-open");
-            }
-        }
-    });
 
     // Lazy load thumbnails
     const lazyLoad = (thumb) => {
@@ -74,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     thumbnails.forEach(thumb => observer.observe(thumb));
-    videoThumbnails.forEach(thumb => observer.observe(thumb));
 
     // Change image function
     function changeImage(thumbnail, imageUrl) {
@@ -97,44 +46,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Video functionality
-    function changeVideo(thumbnail, videoUrl) {
-        displayedVideo.src = videoUrl;
-        displayedVideo.load();
-        
-        // Add error handling for video loading
-        displayedVideo.onerror = function() {
-            console.error("Error loading video:", videoUrl);
-        };
-        
-        displayedVideo.play().catch(e => {
-            console.warn("Auto-play prevented:", e);
-        });
-        
-        videoThumbnails.forEach(thumb => thumb.classList.remove("active"));
-        thumbnail.classList.add("active");
-    }
-
-    document.querySelector(".video-thumbnails").addEventListener("click", function (e) {
-        if (e.target.classList.contains("video-thumb")) {
-            const videoUrl = e.target.getAttribute("data-src");
-            changeVideo(e.target, videoUrl);
-        }
-    });
-
     // Slideshow functions
     function startSlideshow() {
         slideshowInterval = setInterval(() => {
-            currentIndex = (currentIndex + 1) % imageList.length;
+            currentIndex = (currentIndex + 1) % imageList.length; // Cycle through images
             const nextThumbnail = thumbnails[currentIndex];
             changeImage(nextThumbnail, imageList[currentIndex]);
-        }, 3500);
+        }, 3500); // Change image every 3.5 seconds
     }
 
     function stopSlideshow() {
         clearInterval(slideshowInterval);
         isSlideshowActive = false;
-        slideshowToggle.textContent = "🌙";
+        slideshowToggle.textContent = "🌙"; // Reset button text
     }
 
     // Slideshow toggle
@@ -150,33 +74,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Double-click to enter fullscreen
     displayedImage.addEventListener("dblclick", function () {
-        toggleFullscreen(this);
-    });
-
-    // Add fullscreen capability to video as well
-    displayedVideo.addEventListener("dblclick", function() {
-        toggleFullscreen(this);
-    });
-
-    function toggleFullscreen(element) {
         if (document.fullscreenElement) {
-            document.exitFullscreen().catch((err) => {
-                console.error(`Error exiting fullscreen: ${err.message}`);
-            });
+            document.exitFullscreen();
         } else {
-            if (element.requestFullscreen) {
-                element.requestFullscreen().catch((err) => {
-                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
-                });
-            } else if (element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-            } else if (element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) {
-                element.msRequestFullscreen();
+            if (displayedImage.requestFullscreen) {
+                displayedImage.requestFullscreen();
+            } else if (displayedImage.mozRequestFullScreen) {
+                displayedImage.mozRequestFullScreen();
+            } else if (displayedImage.webkitRequestFullscreen) {
+                displayedImage.webkitRequestFullscreen();
+            } else if (displayedImage.msRequestFullscreen) {
+                displayedImage.msRequestFullscreen();
             }
         }
-    }
+    });
 
     // Handle fullscreen change events
     document.addEventListener("fullscreenchange", handleFullscreenChange);
@@ -186,72 +97,84 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function handleFullscreenChange() {
         if (document.fullscreenElement) {
-            document.fullscreenElement.classList.add("fullscreen");
+            displayedImage.classList.add("fullscreen");
         } else {
-            document.querySelectorAll(".fullscreen").forEach(element => {
-                element.classList.remove("fullscreen");
-            });
+            displayedImage.classList.remove("fullscreen");
         }
     }
 
-    // Preload main image for faster initial loading
-    const mainImage = new Image();
-    mainImage.src = displayedImage.src;
-});
+    // Video functionality
+    const videoThumbnails = document.querySelectorAll(".video-thumb");
+    const displayedVideo = document.getElementById("displayedVideo");
 
-// Moved from server.js: Frontend file upload handling
-
-document.addEventListener("DOMContentLoaded", function () {
+    // File Upload Handling (moved from server.js)
     const fileInput = document.getElementById("fileInput");
     const uploadBtn = document.getElementById("uploadBtn");
     const progressBar = document.getElementById("progressBar");
 
-    uploadBtn.addEventListener("click", function () {
-        if (fileInput.files.length === 0) {
-            alert("Please select files to upload.");
-            return;
-        }
-
-        const formData = new FormData();
-        for (let i = 0; i < fileInput.files.length; i++) {
-            if (fileInput.files[i].size > 150 * 1024 * 1024) {
-                alert(`File "${fileInput.files[i].name}" exceeds 150MB and cannot be uploaded.`);
+    if (fileInput && uploadBtn && progressBar) {
+        uploadBtn.addEventListener("click", function () {
+            if (fileInput.files.length === 0) {
+                alert("Please select files to upload.");
                 return;
             }
-            formData.append("media", fileInput.files[i]);
-        }
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/upload", true);
-
-        // Progress event
-        xhr.upload.onprogress = function (event) {
-            if (event.lengthComputable) {
-                let progress = (event.loaded / event.total) * 100;
-                progressBar.style.width = progress + "%";
-                progressBar.style.background = "#00ff00";
+            const formData = new FormData();
+            for (let i = 0; i < fileInput.files.length; i++) {
+                if (fileInput.files[i].size > 150 * 1024 * 1024) {
+                    alert(`File "${fileInput.files[i].name}" exceeds 150MB and cannot be uploaded.`);
+                    return;
+                }
+                formData.append("media", fileInput.files[i]);
             }
-        };
 
-        // Upload complete
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                alert("Upload Complete!");
-                progressBar.style.width = "100%";
-            } else {
-                const errorMessage = `Upload Failed: ${xhr.responseText}`;
-                document.getElementById('error-message').innerText = errorMessage;
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/upload", true);
+
+            // Progress event
+            xhr.upload.onprogress = function (event) {
+                if (event.lengthComputable) {
+                    let progress = (event.loaded / event.total) * 100;
+                    progressBar.style.width = progress + "%";
+                    progressBar.style.background = "#00ff00";
+                }
+            };
+
+            // Upload complete
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    alert("Upload Complete!");
+                    progressBar.style.width = "100%";
+                } else {
+                    alert("Upload Failed: " + xhr.responseText);
+                    progressBar.style.background = "red";
+                }
+            };
+
+            // Error handling
+            xhr.onerror = function () {
+                alert("An error occurred while uploading.");
                 progressBar.style.background = "red";
-            }
-        };
+            };
 
-        // Error handling
-        xhr.onerror = function () {
-            alert("An error occurred while uploading.");
-            progressBar.style.background = "red";
-        };
+            // Send the request
+            xhr.send(formData);
+        });
+    }
 
-        // Send the request
-        xhr.send(formData);
+
+    function changeVideo(thumbnail, videoUrl) {
+        displayedVideo.src = videoUrl;
+        displayedVideo.load();
+        displayedVideo.play();
+        videoThumbnails.forEach(thumb => thumb.classList.remove("active"));
+        thumbnail.classList.add("active");
+    }
+
+    document.querySelector(".video-thumbnails").addEventListener("click", function (e) {
+        if (e.target.classList.contains("video-thumb")) {
+            const videoUrl = e.target.getAttribute("data-src");
+            changeVideo(e.target, videoUrl);
+        }
     });
 });
