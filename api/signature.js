@@ -1,28 +1,54 @@
 const ImageKit = require("imagekit");
 
-const allowedOrigins = [
-  "https://karthikprasadm.github.io",
-  "https://karthikprasadm-github-io.vercel.app"
-];
+function isAllowedOrigin(origin) {
+  // Allow GitHub Pages
+  if (origin === "https://karthikprasadm.github.io") return true;
+  // Allow ANY .vercel.app domain (for debugging)
+  if (/\.vercel\.app$/.test(origin)) return true;
+  return false;
+}
 
 module.exports = (req, res) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
-  res.setHeader("Vary", "Origin");
-  if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
-  }
+  try {
+    const origin = req.headers.origin;
+    if (isAllowedOrigin(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Vary", "Origin");
+    if (req.method === "OPTIONS") {
+      res.status(200).end();
+      return;
+    }
 
-  const imagekit = new ImageKit({
-    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
-  });
+    // Validate environment variables
+    if (
+      !process.env.IMAGEKIT_PUBLIC_KEY ||
+      !process.env.IMAGEKIT_PRIVATE_KEY ||
+      !process.env.IMAGEKIT_URL_ENDPOINT
+    ) {
+      res.status(500).json({ error: "Missing ImageKit environment variables" });
+      return;
+    }
 
-  const signature = imagekit.getAuthenticationParameters();
-  res.status(200).json(signature);
+    const imagekit = new ImageKit({
+      publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+      privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+      urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+    });
+
+    const signature = imagekit.getAuthenticationParameters();
+    res.status(200).json(signature);
+  } catch (err) {
+    // Always set CORS headers for errors too!
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    const origin = req.headers.origin;
+    if (isAllowedOrigin(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    res.status(500).json({ error: "Internal server error", details: err.message });
+  }
 };
