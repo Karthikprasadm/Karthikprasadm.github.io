@@ -1,3 +1,7 @@
+// Renamed to disable custom server for Vercel deployment. Use this only for local development.
+// To use locally, rename back to server.js
+
+/*
 // Backend: Express.js Server with Multer for File Uploads
 require('dotenv').config();
 const express = require("express");
@@ -117,3 +121,4 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
+*/
