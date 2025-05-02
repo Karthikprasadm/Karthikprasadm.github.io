@@ -1,9 +1,17 @@
 const ImageKit = require("imagekit");
 
+const allowedOrigins = [
+  "https://karthikprasadm.github.io",
+  "https://karthikprasadm-github-io.vercel.app"
+];
+
 module.exports = (req, res) => {
-  // Allow CORS from your GitHub Pages static site
-  res.setHeader("Access-Control-Allow-Origin", "https://karthikprasadm.github.io");
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+  res.setHeader("Vary", "Origin");
   if (req.method === "OPTIONS") {
     res.status(200).end();
     return;
