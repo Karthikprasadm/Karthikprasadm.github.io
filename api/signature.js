@@ -1,8 +1,8 @@
 const ImageKit = require("imagekit");
 
 module.exports = (req, res) => {
-  // Allow CORS from your deployed static site
-  res.setHeader("Access-Control-Allow-Origin", "https://karthikprasadm-github-io.vercel.app");
+  // Allow CORS from your GitHub Pages static site
+  res.setHeader("Access-Control-Allow-Origin", "https://karthikprasadm.github.io");
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
   if (req.method === "OPTIONS") {
     res.status(200).end();
