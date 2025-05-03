@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     const thumbnails = document.querySelectorAll(".thumb");
     const displayedImage = document.getElementById("displayedImage");
@@ -27,11 +26,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Change image function
     function changeImage(thumbnail, imageUrl) {
+        displayedImage.style.transition = "opacity 0.45s cubic-bezier(0.4,0,0.2,1), transform 0.45s cubic-bezier(0.4,0,0.2,1)";
         displayedImage.style.opacity = "0";
+        displayedImage.style.transform = "scale(0.96)";
         setTimeout(() => {
             displayedImage.src = imageUrl;
-            displayedImage.style.opacity = "1";
-        }, 300);
+            displayedImage.onload = function() {
+                displayedImage.style.opacity = "1";
+                displayedImage.style.transform = "scale(1)";
+            };
+        }, 80);
 
         thumbnails.forEach(thumb => thumb.classList.remove("active"));
         thumbnail.classList.add("active");
@@ -107,6 +111,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const videoThumbnails = document.querySelectorAll(".video-thumb");
     const displayedVideo = document.getElementById("displayedVideo");
 
+    // Change video function
+    function changeVideo(thumbnail, videoUrl) {
+        displayedVideo.src = videoUrl;
+        displayedVideo.load();
+        displayedVideo.play();
+        videoThumbnails.forEach(thumb => thumb.classList.remove("active"));
+        thumbnail.classList.add("active");
+    }
+
+    document.querySelector(".video-thumbnails").addEventListener("click", function (e) {
+        if (e.target.classList.contains("video-thumb")) {
+            const videoUrl = e.target.getAttribute("data-src");
+            changeVideo(e.target, videoUrl);
+        }
+    });
+
     // File Upload Handling (moved from server.js)
     const fileInput = document.getElementById("fileInput");
     const uploadBtn = document.getElementById("uploadBtn");
@@ -161,20 +181,4 @@ document.addEventListener("DOMContentLoaded", function () {
             xhr.send(formData);
         });
     }
-
-
-    function changeVideo(thumbnail, videoUrl) {
-        displayedVideo.src = videoUrl;
-        displayedVideo.load();
-        displayedVideo.play();
-        videoThumbnails.forEach(thumb => thumb.classList.remove("active"));
-        thumbnail.classList.add("active");
-    }
-
-    document.querySelector(".video-thumbnails").addEventListener("click", function (e) {
-        if (e.target.classList.contains("video-thumb")) {
-            const videoUrl = e.target.getAttribute("data-src");
-            changeVideo(e.target, videoUrl);
-        }
-    });
 });
