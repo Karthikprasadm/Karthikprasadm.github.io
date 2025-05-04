@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="galaxy.css">
     <link rel="stylesheet" href="upload.css">
 </head>
-<body>
+<body class="upload-page">
     <div class="stars"></div>
     <nav class="navbar">
         <div class="social-icons">
@@ -39,6 +39,7 @@
             <button class="dropbtn" aria-label="Open menu">Menu</button>
             <div class="dropdown-content">
                 <a href="index.html" id="backToGallery">Back to Gallery</a>
+                <a href="about.html">Know me <3</a>
             </div>
         </div>
     </nav>
@@ -90,20 +91,54 @@
                 ikPreview.innerHTML = `<p>Please select a file before uploading.</p>`;
                 return;
             }
+            
+            // Clear previous messages
+            ikPreview.innerHTML = `<p>Uploading ${files.length} file(s)...</p>`;
+            
+            // Reset progress bar to 0
+            ikProgressBar.style.width = "0%";
+            
+            // Get signature once for all uploads
             const sigData = await getSignature();
-            const file = files[0];
-            imagekit.upload({
-                file: file,
-                fileName: file.name,
-                signature: sigData.signature,
-                expire: sigData.expire,
-                token: sigData.token
-            }, function(err, result) {
-                if (err) {
-                    ikPreview.innerHTML = `<p class='error-message'>Upload failed: ${err.message}</p>`;
-                } else {
-                    ikPreview.innerHTML = `<p>Upload success!</p>`;
-                }
+            
+            // Track upload progress
+            let completedUploads = 0;
+            let failedUploads = 0;
+            
+            // Process each file
+            Array.from(files).forEach((file, index) => {
+                imagekit.upload({
+                    file: file,
+                    fileName: file.name,
+                    signature: sigData.signature,
+                    expire: sigData.expire,
+                    token: sigData.token,
+                    useUniqueFileName: true,
+                    onProgress: function(progress) {
+                        // Update progress for this file
+                        const percentage = progress.loaded / progress.total * 100;
+                        ikProgressBar.style.width = `${percentage}%`;
+                    }
+                }, function(err, result) {
+                    // Increment counters
+                    if (err) {
+                        failedUploads++;
+                        console.error(`Error uploading ${file.name}:`, err);
+                    } else {
+                        completedUploads++;
+                    }
+                    
+                    // Update status message when all uploads complete
+                    if (completedUploads + failedUploads === files.length) {
+                        if (failedUploads > 0) {
+                            ikPreview.innerHTML = `<p>Completed: ${completedUploads} files uploaded, ${failedUploads} failed.</p>`;
+                        } else {
+                            ikPreview.innerHTML = `<p>Success! All ${completedUploads} files uploaded.</p>`;
+                            // Display the uploaded media
+                            displayUploadedMedia(files);
+                        }
+                    }
+                });
             });
         });
     </script>
@@ -177,6 +212,30 @@
             uploadForm.classList.remove("dragover");
             mediaUpload.files = e.dataTransfer.files;
             mediaUpload.dispatchEvent(new Event("change"));
+        });
+    </script>
+
+    <script>
+        // Dropdown menu toggle
+        const dropdownBtn = document.querySelector('.dropbtn');
+        const dropdownContent = document.querySelector('.dropdown-content');
+        
+        // Toggle dropdown when clicking the button
+        dropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownContent.classList.toggle('show-dropdown');
+        });
+        
+        // Close dropdown when clicking anywhere else on the page
+        document.addEventListener('click', function(e) {
+            if (!e.target.matches('.dropbtn') && !dropdownContent.contains(e.target)) {
+                dropdownContent.classList.remove('show-dropdown');
+            }
+        });
+        
+        // Prevent dropdown from closing when clicking inside it
+        dropdownContent.addEventListener('click', function(e) {
+            e.stopPropagation();
         });
     </script>
 </body>
