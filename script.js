@@ -127,58 +127,33 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // File Upload Handling (moved from server.js)
-    const fileInput = document.getElementById("fileInput");
-    const uploadBtn = document.getElementById("uploadBtn");
-    const progressBar = document.getElementById("progressBar");
-
-    if (fileInput && uploadBtn && progressBar) {
-        uploadBtn.addEventListener("click", function () {
-            if (fileInput.files.length === 0) {
-                alert("Please select files to upload.");
-                return;
+    document.querySelector('.upload-form button').addEventListener('click', function(e) {
+        e.preventDefault();
+        const fileInput = document.querySelector('input[type="file"]');
+        const progressBar = document.querySelector('.progress');
+        const file = fileInput.files[0];
+        if (!file) return;
+    
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/your-upload-endpoint'); // Change this to your actual upload endpoint
+    
+        xhr.upload.addEventListener('progress', function(e) {
+            if (e.lengthComputable) {
+                const percent = (e.loaded / e.total) * 100;
+                progressBar.style.width = percent + '%';
             }
-
-            const formData = new FormData();
-            for (let i = 0; i < fileInput.files.length; i++) {
-                if (fileInput.files[i].size > 150 * 1024 * 1024) {
-                    alert(`File "${fileInput.files[i].name}" exceeds 150MB and cannot be uploaded.`);
-                    return;
-                }
-                formData.append("media", fileInput.files[i]);
-            }
-
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/upload", true);
-
-            // Progress event
-            xhr.upload.onprogress = function (event) {
-                if (event.lengthComputable) {
-                    let progress = (event.loaded / event.total) * 100;
-                    progressBar.style.width = progress + "%";
-                    progressBar.style.background = "#00ff00";
-                }
-            };
-
-            // Upload complete
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    alert("Upload Complete!");
-                    progressBar.style.width = "100%";
-                } else {
-                    alert("Upload Failed: " + xhr.responseText);
-                    progressBar.style.background = "red";
-                }
-            };
-
-            // Error handling
-            xhr.onerror = function () {
-                alert("An error occurred while uploading.");
-                progressBar.style.background = "red";
-            };
-
-            // Send the request
-            xhr.send(formData);
         });
-    }
+    
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                progressBar.style.width = '100%';
+            } else {
+                progressBar.style.width = '0%';
+            }
+        };
+    
+        const formData = new FormData();
+        formData.append('file', file);
+        xhr.send(formData);
+    });
 });
