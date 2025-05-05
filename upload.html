@@ -109,7 +109,7 @@
             let failedUploads = 0;
             let failedFiles = [];
             let failedReasons = [];
-            Array.from(files).forEach((file, index) => {
+            Array.from(files).forEach(async (file, index) => {
                 // Validate file type and size before upload
                 const allowedTypes = ["image/jpeg", "image/png", "video/mp4"];
                 const maxSize = 10 * 1024 * 1024; // 10MB
@@ -122,12 +122,28 @@
                     failedFiles.push(file.name);
                     failedReasons.push(`${file.name}: File size exceeds 10MB`);
                 } else {
+                    let sigDataPerFile;
+                    try {
+                        sigDataPerFile = await getSignature();
+                        if (!sigDataPerFile.signature || !sigDataPerFile.token || !sigDataPerFile.expire) {
+                            throw new Error("Invalid signature response");
+                        }
+                    } catch (err) {
+                        failedUploads++;
+                        failedFiles.push(file.name);
+                        failedReasons.push(`${file.name}: Failed to get upload signature.`);
+                        if (completedUploads + failedUploads === files.length) {
+                            ikPreview.innerHTML = `<p>Completed: ${completedUploads} files uploaded, ${failedUploads} failed.<br>Failed: ${failedFiles.join(", ")}<br>${failedReasons.length ? "<br>Reasons:<br>" + failedReasons.join("<br>") : ""}</p>`;
+                            ikErrorMessage.textContent = "Some files failed to upload. Please check file type, size, or see details below.";
+                        }
+                        return;
+                    }
                     imagekit.upload({
                         file: file,
                         fileName: file.name,
-                        signature: sigData.signature,
-                        expire: sigData.expire,
-                        token: sigData.token,
+                        signature: sigDataPerFile.signature,
+                        expire: sigDataPerFile.expire,
+                        token: sigDataPerFile.token,
                         useUniqueFileName: true,
                         onProgress: function(progress) {
                             const percentage = progress.loaded / progress.total * 100;
