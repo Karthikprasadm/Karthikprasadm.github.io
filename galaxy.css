@@ -226,23 +226,18 @@ body::before {
 }
 
 .dropdown-content a {
-    /* Removing these properties */
-    /* content: ""; */
-    /* display: block; */
-    /* height: 20px; */
-    /* width: 100%; */
-    /* clear: both; */
-    color: white;
+    color: #e0e0e0;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-    transition: background-color 0.3s;
-    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 8px;
+    transition: background 0.2s;
 }
 
 .dropdown-content a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    /* Removing the border-radius and margin that were added */
+    background-color: rgba(60, 60, 60, 0.9);
+    border-radius: 8px;
 }
 
 .dropdown:hover .dropdown-content,
