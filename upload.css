@@ -49,8 +49,9 @@ main {
 
 .upload-container {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 1rem;
     padding: 0 1rem;
+    border-radius: 2px;
 }
 
 .upload-form {
@@ -65,7 +66,7 @@ main {
 
 .upload-form label {
     display: block;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     font-size: 1.2rem;
     color: #e0e0e0;
 }
@@ -84,7 +85,7 @@ main {
     cursor: pointer;
     transition: background 0.3s ease;
     border: none;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .upload-form .custom-file-upload:hover,
@@ -95,24 +96,43 @@ main {
 
 .progress-bar {
     width: 100%;
-    height: 8px;
-    background: rgba(40, 40, 40, 0.9);
-    border-radius: 4px;
+    height: 10px;
+    background: rgba(60, 60, 60, 0.3);
+    border-radius: 5px;
     margin-top: 1rem;
     overflow: hidden;
     position: relative;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
 }
 
 .progress {
     height: 100%;
-    background: linear-gradient(90deg, #4caf50, #45a049);
+    background: none;
     width: 0;
-    transition: width 0.3s ease-in-out;
+    transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
     position: absolute;
     left: 0;
     top: 0;
+    border-radius: 8px;
+    box-shadow: none;
+    opacity: 0;
 }
 
+.progress-bar[aria-valuenow]::after {
+    content: attr(aria-valuenow) '%';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    font-weight: bold;
+    z-index: 2;
+    pointer-events: none;
+}
 /* Add a subtle glow effect to the progress bar */
 .progress::after {
     content: '';
@@ -121,7 +141,7 @@ main {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1));
+    background: none;
 }
 
 .error-message {
