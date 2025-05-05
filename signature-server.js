@@ -12,8 +12,12 @@ const imagekit = new ImageKit({
   urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
 });
 
+const { v4: uuidv4 } = require('uuid');
+
 app.get('/signature', (req, res) => {
   const signature = imagekit.getAuthenticationParameters();
+  // Generate a unique token for every request
+  signature.token = uuidv4();
   res.json(signature);
 });
 

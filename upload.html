@@ -164,7 +164,7 @@
                                 ikPreview.innerHTML = `<p>Completed: ${completedUploads} files uploaded, ${failedUploads} failed.<br>Failed: ${failedFiles.join(", ")}<br>${failedReasons.length ? "<br>Reasons:<br>" + failedReasons.join("<br>") : ""}</p>`;
                                 ikErrorMessage.textContent = "Some files failed to upload. Please check file type, size, or see details below.";
                             } else {
-                                ikPreview.innerHTML = `<p>Success! All ${completedUploads} files uploaded.</p>`;
+                                ikPreview.innerHTML = `<p>Success! All ${completedUploads} file(s) uploaded.</p>`;
                                 ikErrorMessage.textContent = "";
                                 displayUploadedMedia(files);
                             }
