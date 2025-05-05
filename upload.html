@@ -108,37 +108,58 @@
             let completedUploads = 0;
             let failedUploads = 0;
             let failedFiles = [];
+            let failedReasons = [];
             Array.from(files).forEach((file, index) => {
-                imagekit.upload({
-                    file: file,
-                    fileName: file.name,
-                    signature: sigData.signature,
-                    expire: sigData.expire,
-                    token: sigData.token,
-                    useUniqueFileName: true,
-                    onProgress: function(progress) {
-                        const percentage = progress.loaded / progress.total * 100;
-                        ikProgressBar.style.width = `${percentage}%`;
-                    }
-                }, function(err, result) {
-                    if (err) {
-                        failedUploads++;
-                        failedFiles.push(file.name);
-                        console.error(`Error uploading ${file.name}:`, err);
-                    } else {
-                        completedUploads++;
-                    }
-                    if (completedUploads + failedUploads === files.length) {
-                        if (failedUploads > 0) {
-                            ikPreview.innerHTML = `<p>Completed: ${completedUploads} files uploaded, ${failedUploads} failed.<br>Failed: ${failedFiles.join(", ")}</p>`;
-                            ikErrorMessage.textContent = "Some files failed to upload. Please check file type, size, or try again.";
-                        } else {
-                            ikPreview.innerHTML = `<p>Success! All ${completedUploads} files uploaded.</p>`;
-                            ikErrorMessage.textContent = "";
-                            displayUploadedMedia(files);
+                // Validate file type and size before upload
+                const allowedTypes = ["image/jpeg", "image/png", "video/mp4"];
+                const maxSize = 10 * 1024 * 1024; // 10MB
+                if (!allowedTypes.includes(file.type)) {
+                    failedUploads++;
+                    failedFiles.push(file.name);
+                    failedReasons.push(`${file.name}: Invalid file type (${file.type})`);
+                } else if (file.size > maxSize) {
+                    failedUploads++;
+                    failedFiles.push(file.name);
+                    failedReasons.push(`${file.name}: File size exceeds 10MB`);
+                } else {
+                    imagekit.upload({
+                        file: file,
+                        fileName: file.name,
+                        signature: sigData.signature,
+                        expire: sigData.expire,
+                        token: sigData.token,
+                        useUniqueFileName: true,
+                        onProgress: function(progress) {
+                            const percentage = progress.loaded / progress.total * 100;
+                            ikProgressBar.style.width = `${percentage}%`;
                         }
-                    }
-                });
+                    }, function(err, result) {
+                        if (err) {
+                            failedUploads++;
+                            failedFiles.push(file.name);
+                            let reason = err && err.message ? err.message : "Unknown error";
+                            failedReasons.push(`${file.name}: ${reason}`);
+                            console.error(`Error uploading ${file.name}:`, err);
+                        } else {
+                            completedUploads++;
+                        }
+                        if (completedUploads + failedUploads === files.length) {
+                            if (failedUploads > 0) {
+                                ikPreview.innerHTML = `<p>Completed: ${completedUploads} files uploaded, ${failedUploads} failed.<br>Failed: ${failedFiles.join(", ")}<br>${failedReasons.length ? "<br>Reasons:<br>" + failedReasons.join("<br>") : ""}</p>`;
+                                ikErrorMessage.textContent = "Some files failed to upload. Please check file type, size, or see details below.";
+                            } else {
+                                ikPreview.innerHTML = `<p>Success! All ${completedUploads} files uploaded.</p>`;
+                                ikErrorMessage.textContent = "";
+                                displayUploadedMedia(files);
+                            }
+                        }
+                    });
+                }
+                // If all files are invalid, show immediately
+                if (completedUploads + failedUploads === files.length && failedUploads > 0 && completedUploads === 0) {
+                    ikPreview.innerHTML = `<p>Completed: 0 files uploaded, ${failedUploads} failed.<br>Failed: ${failedFiles.join(", ")}<br>${failedReasons.length ? "<br>Reasons:<br>" + failedReasons.join("<br>") : ""}</p>`;
+                    ikErrorMessage.textContent = "Some files failed to upload. Please check file type, size, or see details below.";
+                }
             });
         });
     </script>
