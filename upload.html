@@ -91,21 +91,23 @@
                 ikPreview.innerHTML = `<p>Please select a file before uploading.</p>`;
                 return;
             }
-            
-            // Clear previous messages
+            ikErrorMessage.textContent = "";
             ikPreview.innerHTML = `<p>Uploading ${files.length} file(s)...</p>`;
-            
-            // Reset progress bar to 0
             ikProgressBar.style.width = "0%";
-            
-            // Get signature once for all uploads
-            const sigData = await getSignature();
-            
-            // Track upload progress
+            let sigData;
+            try {
+                sigData = await getSignature();
+                if (!sigData.signature || !sigData.token || !sigData.expire) {
+                    throw new Error("Invalid signature response");
+                }
+            } catch (err) {
+                ikErrorMessage.textContent = "Failed to get upload signature. Please try again later.";
+                ikPreview.innerHTML = "";
+                return;
+            }
             let completedUploads = 0;
             let failedUploads = 0;
-            
-            // Process each file
+            let failedFiles = [];
             Array.from(files).forEach((file, index) => {
                 imagekit.upload({
                     file: file,
@@ -115,26 +117,24 @@
                     token: sigData.token,
                     useUniqueFileName: true,
                     onProgress: function(progress) {
-                        // Update progress for this file
                         const percentage = progress.loaded / progress.total * 100;
                         ikProgressBar.style.width = `${percentage}%`;
                     }
                 }, function(err, result) {
-                    // Increment counters
                     if (err) {
                         failedUploads++;
+                        failedFiles.push(file.name);
                         console.error(`Error uploading ${file.name}:`, err);
                     } else {
                         completedUploads++;
                     }
-                    
-                    // Update status message when all uploads complete
                     if (completedUploads + failedUploads === files.length) {
                         if (failedUploads > 0) {
-                            ikPreview.innerHTML = `<p>Completed: ${completedUploads} files uploaded, ${failedUploads} failed.</p>`;
+                            ikPreview.innerHTML = `<p>Completed: ${completedUploads} files uploaded, ${failedUploads} failed.<br>Failed: ${failedFiles.join(", ")}</p>`;
+                            ikErrorMessage.textContent = "Some files failed to upload. Please check file type, size, or try again.";
                         } else {
                             ikPreview.innerHTML = `<p>Success! All ${completedUploads} files uploaded.</p>`;
-                            // Display the uploaded media
+                            ikErrorMessage.textContent = "";
                             displayUploadedMedia(files);
                         }
                     }
