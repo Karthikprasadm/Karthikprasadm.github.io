@@ -157,3 +157,82 @@ document.addEventListener("DOMContentLoaded", function () {
         xhr.send(formData);
     });
 });
+
+// Parallax effect for .stars layers
+const stars1 = document.querySelector('.stars.parallax1');
+const stars2 = document.querySelector('.stars.parallax2');
+document.addEventListener('mousemove', function(e) {
+    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    if (stars1) {
+        stars1.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
+    }
+    if (stars2) {
+        stars2.style.transform = `translate(${x * 20}px, ${y * 20}px)`;
+    }
+});
+// Subtle animation on gallery image hover (main image)
+if (displayedImage) {
+    displayedImage.addEventListener('mouseenter', function() {
+        displayedImage.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        displayedImage.style.transform = 'scale(1.03) rotate(-0.5deg)';
+    });
+    displayedImage.addEventListener('mouseleave', function() {
+        displayedImage.style.transform = 'scale(1) rotate(0deg)';
+    });
+}
+
+// Add modal overlay for preview images
+const previewContainer = document.querySelector('.preview');
+if (previewContainer) {
+    previewContainer.addEventListener('click', function(e) {
+        const target = e.target;
+        if (target.tagName === 'IMG' || target.classList.contains('preview-thumb')) {
+            const src = target.getAttribute('src') || target.getAttribute('data-src');
+            if (!src) return;
+            let modal = document.getElementById('previewModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'previewModal';
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100vw';
+                modal.style.height = '100vh';
+                modal.style.background = 'rgba(0,0,0,0.85)';
+                modal.style.display = 'flex';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+                modal.style.zIndex = '9999';
+                modal.style.opacity = '0';
+                modal.style.transition = 'opacity 0.35s cubic-bezier(0.4,0,0.2,1)';
+                modal.innerHTML = '<img style="max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 4px 32px #0008;transform:scale(0.96);transition:opacity 0.35s cubic-bezier(0.4,0,0.2,1),transform 0.35s cubic-bezier(0.4,0,0.2,1);opacity:0;">';
+                document.body.appendChild(modal);
+                setTimeout(() => { modal.style.opacity = '1'; }, 10);
+                setTimeout(() => {
+                    const img = modal.querySelector('img');
+                    img.style.opacity = '1';
+                    img.style.transform = 'scale(1)';
+                }, 60);
+                modal.addEventListener('click', function() {
+                    modal.style.opacity = '0';
+                    setTimeout(() => { modal.remove(); }, 350);
+                });
+            } else {
+                const img = modal.querySelector('img');
+                img.style.opacity = '0';
+                img.style.transform = 'scale(0.96)';
+                setTimeout(() => {
+                    img.src = src;
+                    img.onload = function() {
+                        img.style.opacity = '1';
+                        img.style.transform = 'scale(1)';
+                    };
+                }, 80);
+                modal.style.opacity = '1';
+            }
+            const img = modal.querySelector('img');
+            img.src = src;
+        }
+    });
+}

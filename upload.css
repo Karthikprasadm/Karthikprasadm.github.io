@@ -193,10 +193,13 @@ main {
     text-decoration: none;
     display: block;
     font-family: 'Montserrat', sans-serif;
+    border-radius: 8px;
+    transition: background 0.2s;
 }
 
 .dropdown-content a:hover {
     background-color: rgba(60, 60, 60, 0.9);
+    border-radius: 8px;
 }
 
 .dropdown:hover .dropdown-content {

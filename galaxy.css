@@ -31,6 +31,16 @@ body::before {
     to { background-position: -1000px 1000px; }
 }
 
+@keyframes parallaxStars1 {
+    from { background-position: 0 0; }
+    to { background-position: -500px 500px; }
+}
+
+@keyframes parallaxStars2 {
+    from { background-position: 0 0; }
+    to { background-position: 500px -500px; }
+}
+
 .stars {
     position: fixed;
     top: 0;
@@ -40,6 +50,19 @@ body::before {
     background: url('https://www.transparenttextures.com/patterns/stardust.png');
     opacity: 0.8;
     animation: twinkling 100s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.stars.parallax1 {
+    opacity: 0.5;
+    animation: parallaxStars1 120s linear infinite;
+    z-index: -1;
+}
+
+.stars.parallax2 {
+    opacity: 0.3;
+    animation: parallaxStars2 180s linear infinite;
     z-index: -1;
 }
 
