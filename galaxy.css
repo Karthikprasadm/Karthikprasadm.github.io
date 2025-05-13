@@ -1,4 +1,3 @@
-
 /* galaxy.css */
 /* General Page Styling */
 body {
@@ -214,9 +213,9 @@ body::before {
 .dropdown-content {
     display: none;
     position: absolute;
-    left: 50%; /* Changed from 20% to 50% to center it */
-    transform: translateX(-50%); /* Center the dropdown under the button */
-    top: calc(100% + 20px); /* Position below the invisible bridge */
+    left: 20%;
+    transform: translateX(-50%);
+    top: calc(100% + 20px);
     background-color: rgba(20, 20, 20, 0.9);
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
