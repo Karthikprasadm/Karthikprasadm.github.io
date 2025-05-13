@@ -321,14 +321,60 @@ body.upload-page .dropdown-content {
     display: flex;
     flex-direction: column;
     align-items: center;
+    animation: float 3s ease-in-out infinite;
 }
+
+.yoda-speech-bubble {
+    display: grid;
+    grid-template-columns: repeat(10, 8px);
+    grid-template-rows: repeat(5, 8px);
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.yoda-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0.95;
+}
+
+/* Optional: Add a small tail to the bubble */
+.yoda-speech-tail {
+    display: flex;
+    justify-content: center;
+    margin-top: -2px;
+}
+
+.yoda-speech-tail-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0.95;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
 .yoda-favicon img {
     width: 48px;
     height: 48px;
     pointer-events: none;
     user-select: none;
-    filter: drop-shadow(0 2px 8px #2228);
+    filter: drop-shadow(0 2px 4px rgba(34, 34, 34, 0.3))
+           drop-shadow(0 0 8px rgba(180, 220, 255, 0.15));
+    transition: filter 0.3s ease;
 }
+
+.yoda-favicon:hover img {
+    filter: drop-shadow(0 2px 4px rgba(34, 34, 34, 0.3))
+           drop-shadow(0 0 12px rgba(180, 220, 255, 0.25));
+}
+
 .yoda-favicon::after {
     content: '';
     display: block;
@@ -337,8 +383,38 @@ body.upload-page .dropdown-content {
     margin-top: 2px;
     margin-left: auto;
     margin-right: auto;
-    background: radial-gradient(ellipse at center, rgba(180,220,255,0.25) 60%, rgba(0,0,0,0.12) 100%);
-    opacity: 0.8;
+    background: radial-gradient(ellipse at center, rgba(180,220,255,0.15) 60%, rgba(0,0,0,0.08) 100%);
+    opacity: 0.6;
     border-radius: 50%;
-    /* animation: yoda-wind 1.2s infinite alternate ease-in-out; */
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.95); }
+}
+
+.yoda-modern-box {
+    min-width: 38px;
+    min-height: 20px;
+    padding: 6px 14px;
+    font-size: 0.66rem;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 2px 8px #111, 0 1px 2px #000, 0 0 2px #000;
+    letter-spacing: 1.5px;
+    text-align: center;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18), 0 1.5px 4px rgba(0,0,0,0.10);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    backdrop-filter: blur(8px) saturate(1.2);
+    position: relative;
+    z-index: 1;
+    transition: box-shadow 0.3s, background 0.3s, border 0.3s;
 }

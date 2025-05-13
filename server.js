@@ -1,7 +1,6 @@
 // Renamed to disable custom server for Vercel deployment. Use this only for local development.
 // To use locally, rename back to server.js
 
-/*
 // Backend: Express.js Server with Multer for File Uploads
 require('dotenv').config();
 const express = require("express");
@@ -9,6 +8,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const ImageKit = require('imagekit');
+const { v4: uuidv4 } = require('uuid');
 
 // Configure ImageKit
 const imagekit = new ImageKit({
@@ -60,6 +60,19 @@ app.use(express.static(__dirname));
 // Serve index.html on root request
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
+});
+
+// Local signature endpoint for ImageKit direct upload
+app.get('/api/signature', (req, res) => {
+  const token = uuidv4();
+  const expire = Math.floor(Date.now() / 1000) + 60 * 5; // 5 minutes from now
+  const signature = imagekit.getAuthenticationParameters(token, expire);
+  console.log({ signature: signature.signature, expire: signature.expire, token: signature.token });
+  res.status(200).json({
+    signature: signature.signature,
+    expire: signature.expire,
+    token: signature.token
+  });
 });
 
 // ImageKit upload handler for /upload endpoint
@@ -121,4 +134,3 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
-*/
