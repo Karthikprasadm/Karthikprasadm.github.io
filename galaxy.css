@@ -312,3 +312,33 @@ body.upload-page .dropdown-content {
     left: 20%; /* Keep the original left position for upload page */
     transform: translateX(-50%);
 }
+
+.yoda-favicon {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.yoda-favicon img {
+    width: 48px;
+    height: 48px;
+    pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 2px 8px #2228);
+}
+.yoda-favicon::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 14px;
+    margin-top: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    background: radial-gradient(ellipse at center, rgba(180,220,255,0.25) 60%, rgba(0,0,0,0.12) 100%);
+    opacity: 0.8;
+    border-radius: 50%;
+    /* animation: yoda-wind 1.2s infinite alternate ease-in-out; */
+}
