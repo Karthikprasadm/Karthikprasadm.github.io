@@ -44,7 +44,15 @@ A minimalist, interactive web experience designed as a digital museum of persona
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
 ## 📄 License
-[MIT](LICENSE)
+All Rights Reserved.
+
+Copyright (c) 2025 [Karthik Prasad M (Karthikprasadm)]
+
+This code and all associated files are the exclusive intellectual property of Karthik Prasad M. No person, entity, or organization other than the copyright holder is permitted to use, copy, reproduce, distribute, modify, publish, or access any part of this codebase, in whole or in part, in any form or by any means, without explicit, prior written permission from the copyright holder.
+
+This project is proprietary and confidential. Unauthorized use is strictly prohibited and may result in legal action.
+
+For permission requests, contact: [wingspawn28@gmail.com]
 
 ---
 
