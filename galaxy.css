@@ -95,7 +95,7 @@ body::before {
 .main-image img {
     width: 90%;
     max-width: 800px;
-    border-radius: 12px;
+    border-radius: 15px !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     transition: opacity 0.5s ease-in-out, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
@@ -112,7 +112,7 @@ body::before {
 .thumb, .video-thumb {
     width: 6rem;
     height: auto;
-    border-radius: 12px;
+    border-radius: 15px;
     cursor: pointer;
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease-in-out;
 }
@@ -383,8 +383,8 @@ body.upload-page .dropdown-content {
     margin-top: 2px;
     margin-left: auto;
     margin-right: auto;
-    background: radial-gradient(ellipse at center, rgba(180,220,255,0.15) 60%, rgba(0,0,0,0.08) 100%);
-    opacity: 0.6;
+    background: transparent !important;
+    opacity: 0 !important;
     border-radius: 50%;
     animation: pulse 2s ease-in-out infinite;
 }
@@ -417,4 +417,26 @@ body.upload-page .dropdown-content {
     position: relative;
     z-index: 1;
     transition: box-shadow 0.3s, background 0.3s, border 0.3s;
+}
+
+/* Remove any bottom overlay or bar */
+body > div[style*="position: fixed"],
+body > div[style*="bottom: 0"],
+body > div.bottom-bar, 
+body > .bottom-bar {
+    display: none !important;
+}
+
+/* Remove any dark background at the bottom if present */
+body::after {
+    display: none !important;
+    background: none !important;
+}
+
+body > div:last-child {
+    display: none !important;
+}
+body > div[style*="background"],
+body > div[style*="backdrop-filter"] {
+    display: none !important;
 }
