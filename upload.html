@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Media</title>
+    <link rel="preconnect" href="https://wallpaperaccess.com">
     <link rel="stylesheet" href="galaxy.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jockey+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="upload.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
@@ -73,7 +81,11 @@
         <img src="icons8-baby-yoda-color-favicons/web/icons8-baby-yoda-color-48.png" alt="Baby Yoda" />
     </div>
     <div id="resumeModal" class="resume-modal-overlay" style="display:none;">
+        <div class="stars"></div>
         <div class="resume-modal-content darksite-modal modern-modal">
+            <button class="modern-modal-action" id="downloadResumeBtn" title="Download PDF" style="position:absolute;top:12px;right:100px;z-index:30;">⬇️</button>
+            <button class="modern-modal-action" id="printResumeBtn" title="Print PDF" style="position:absolute;top:12px;right:56px;z-index:30;">🖨️</button>
+            <button class="modern-modal-action" id="fullscreenResumeBtn" title="Fullscreen" style="position:absolute;top:12px;right:148px;z-index:30;">⛶</button>
             <button class="resume-modal-close modern-modal-close" id="closeResumeModal" aria-label="Close" style="position:absolute;top:12px;right:12px;z-index:30;">&times;</button>
             <div class="modern-modal-header">
                 <span class="modern-modal-pdficon">📄</span>
@@ -81,6 +93,7 @@
             </div>
             <div class="resume-pdf-paper darksite-paper modern-modal-paper">
                 <div id="pdfjs-viewer" class="pdfjs-viewer"></div>
+                <div class="pdfjs-controls" style="display:none;"></div>
             </div>
         </div>
     </div>
@@ -95,14 +108,14 @@
         pdfjsLib.getDocument(url).promise.then(function(pdf) {
             for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                 pdf.getPage(pageNum).then(function(page) {
-                    const scale = 0.75;
-                    const quality = 2; // 2x for high-DPI/4K clarity
+                    const scale = 1;
+                    const quality = 3;
                     const viewport = page.getViewport({ scale });
                     const canvas = document.createElement('canvas');
                     canvas.className = 'pdfjs-canvas';
+                    canvas.style.scrollSnapAlign = 'start';
                     container.appendChild(canvas);
                     const context = canvas.getContext('2d');
-                    // Set canvas size for high-DPI
                     canvas.width = viewport.width * quality;
                     canvas.height = viewport.height * quality;
                     canvas.style.width = viewport.width + 'px';
@@ -117,7 +130,7 @@
         var modal = document.getElementById('resumeModal');
         modal.style.display = 'flex';
         setTimeout(function(){modal.classList.add('show');}, 10);
-        renderPDF('my_resume/temp.pdf', 'pdfjs-viewer');
+        renderPDF('my_resume/karthik_resume.pdf', 'pdfjs-viewer');
     };
     document.getElementById('closeResumeModal').onclick = function(e) {
         var modal = document.getElementById('resumeModal');
@@ -129,6 +142,58 @@
             this.classList.remove('show');
             var that = this;
             setTimeout(function(){that.style.display = 'none';}, 200);
+        }
+    };
+    document.getElementById('downloadResumeBtn').onclick = function(e) {
+        e.stopPropagation();
+        const link = document.createElement('a');
+        link.href = 'my_resume/karthik_resume.pdf';
+        link.download = 'Karthik_Resume.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+    document.getElementById('printResumeBtn').onclick = function(e) {
+        e.stopPropagation();
+        let printFrame = document.getElementById('resumePrintFrame');
+        if (!printFrame) {
+            printFrame = document.createElement('iframe');
+            printFrame.id = 'resumePrintFrame';
+            printFrame.style.display = 'none';
+            printFrame.src = 'my_resume/karthik_resume.pdf';
+            document.body.appendChild(printFrame);
+            printFrame.onload = function() {
+                printFrame.contentWindow.focus();
+                printFrame.contentWindow.print();
+            };
+        } else {
+            printFrame.contentWindow.focus();
+            printFrame.contentWindow.print();
+        }
+    };
+    document.getElementById('fullscreenResumeBtn').onclick = function(e) {
+        e.stopPropagation();
+        var modal = document.getElementById('resumeModal');
+        if (!document.fullscreenElement) {
+            if (modal.requestFullscreen) {
+                modal.requestFullscreen();
+            } else if (modal.webkitRequestFullscreen) {
+                modal.webkitRequestFullscreen();
+            } else if (modal.mozRequestFullScreen) {
+                modal.mozRequestFullScreen();
+            } else if (modal.msRequestFullscreen) {
+                modal.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
         }
     };
     </script>
@@ -347,114 +412,179 @@
     .resume-modal-overlay {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(40, 40, 60, 0.06); /* ultra light */
-        backdrop-filter: blur(2px) saturate(1) brightness(1);
         z-index: 2000;
         display: flex;
         align-items: center;
         justify-content: center;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.2s cubic-bezier(.4,0,.2,1);
+        transition: opacity 0.3s cubic-bezier(.4,0,.2,1);
+        animation: fadeInModalBg 0.4s cubic-bezier(.4,0,.2,1);
+        overflow-y: visible;
+        background: linear-gradient(to bottom, #1a1a1a, #000000);
+        box-shadow: none;
+        backdrop-filter: blur(5px) saturate(1.1);
+        -webkit-backdrop-filter: blur(5px) saturate(1.1);
+    }
+    .resume-modal-overlay::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: url('https://www.transparenttextures.com/patterns/stardust.png');
+        opacity: 0.7;
+        animation: twinkling 100s linear infinite;
+    }
+    @keyframes twinkling {
+        from { background-position: 0 0; }
+        to { background-position: -1000px 1000px; }
     }
     .resume-modal-overlay.show {
         opacity: 1;
         pointer-events: auto;
     }
     .modern-modal {
-        background: linear-gradient(135deg, rgba(34,36,48,0.98) 80%, rgba(44,46,60,0.98) 100%);
-        border-radius: 20px;
-        box-shadow: 0 8px 40px 0 #000a, 0 1.5px 4px #23234a33;
-        border: 1.5px solid rgba(120,140,255,0.18);
-        padding: 0;
-        position: relative;
-        max-width: 98vw;
-        min-width: 600px;
+        max-width: 900px;
+        width: 98vw;
+        max-height: 92vh;
+        min-width: 320px;
+        margin: 0 auto;
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        animation: fadeInModalDark 0.22s cubic-bezier(.4,0,.2,1);
         overflow: hidden;
+        position: relative;
+        background: rgba(28, 28, 36, 0.97);
+        border-radius: 18px;
+        box-shadow: 0 4px 32px 0 #000a;
+        border: 1.5px solid rgba(120,140,255,0.08);
     }
     .modern-modal-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(28, 28, 36, 0.97);
+        box-shadow: 0 2px 8px #0002;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         width: 100%;
-        background: linear-gradient(90deg, rgba(60,70,120,0.18) 0%, rgba(44,46,60,0.0) 100%);
-        border-bottom: 1.5px solid rgba(120,140,255,0.10);
-        padding: 0.9rem 1.5rem 0.9rem 1.2rem;
-        position: relative;
-        min-height: 54px;
+        border-bottom: 1px solid rgba(120,140,255,0.07);
+        padding: 0.5rem 1.1rem 0.5rem 1.1rem;
+        min-height: 32px;
+    }
+    .modern-modal-title {
+        font-family: 'Montserrat', Arial, sans-serif;
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #f3f3f3;
+        letter-spacing: 1px;
+        flex: 1;
+        text-shadow: none;
     }
     .modern-modal-pdficon {
         font-size: 1.3rem;
         margin-right: 0.7rem;
-        color: #aab6ff;
-        filter: drop-shadow(0 1px 2px #fff4);
+        color: #bfcaff;
+        filter: none;
+        text-shadow: none;
     }
-    .modern-modal-title {
-        font-family: 'Montserrat', Arial, sans-serif;
-        font-weight: 600;
-        font-size: 1.08rem;
-        color: #e0e0e0;
-        letter-spacing: 1px;
-        flex: 1;
-        text-shadow: 0 1px 2px #111a;
-    }
-    .modern-modal-close {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: linear-gradient(135deg, #23234a 60%, #23234a 100%);
+    .resume-modal-close, .modern-modal-action {
+        background: rgba(44, 46, 60, 0.92);
         border: none;
         color: #e0e0e0;
-        font-size: 2rem;
+        font-size: 1.3rem;
         cursor: pointer;
-        z-index: 20;
+        z-index: 200 !important;
+        position: absolute;
         border-radius: 50%;
-        width: 38px;
-        height: 38px;
-        max-width: 38px;
-        box-shadow: 0 2px 8px #23234a55;
-        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        width: 36px;
+        height: 36px;
+        box-shadow: 0 2px 8px #23234a33;
+        transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.14s;
         display: flex;
         align-items: center;
         justify-content: center;
         outline: none;
+        opacity: 0.95;
+        backdrop-filter: blur(1.5px) saturate(1.1);
     }
-    .modern-modal-close:hover, .modern-modal-close:focus {
-        background: #3a3a6a;
-        color: #aab6ff;
-        box-shadow: 0 4px 16px #aab6ff33;
+    .resume-modal-close:hover, .modern-modal-action:hover, .resume-modal-close:focus, .modern-modal-action:focus {
+        background: #bfcaff;
+        color: #23234a;
+        box-shadow: 0 4px 16px #bfcaff33;
+        transform: scale(1.08);
+        opacity: 1;
     }
+    #downloadResumeBtn { right: 120px; }
+    #printResumeBtn { right: 68px; }
+    #closeResumeModal { right: 16px; }
     .modern-modal-paper {
-        background: linear-gradient(120deg, rgba(34,34,44,0.98) 80%, rgba(44,44,60,0.98) 100%);
-        border-radius: 0 0 18px 18px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 4px rgba(0,0,0,0.10);
-        padding: 2vw 2vw 2vw 2vw;
+        max-height: 80vh;
+        overflow-y: visible;
+        width: 100%;
+        min-width: 0;
+        margin-top: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: none;
-        max-width: 96vw;
-        min-width: 520px;
-        overflow: auto;
+        background: transparent;
+        box-shadow: none;
+    }
+    .pdfjs-viewer {
+        width: 100%;
+        min-height: 60vh;
+        max-height: 80vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 1rem;
+        z-index: 2;
+        padding-top: 72px;
+        scroll-behavior: smooth;
+        overscroll-behavior: contain;
         margin-top: 0;
-        /* Hide scrollbar for all browsers */
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none;  /* IE 10+ */
     }
-    .modern-modal-paper::-webkit-scrollbar {
-        display: none; /* Chrome/Safari/Webkit */
+    .pdfjs-canvas {
+        border-radius: 18px;
+        box-shadow: 0 4px 32px #00ffe744, 0 1.5px 4px #23234a33;
+        background: #23234a;
+        margin-bottom: 0;
+        max-width: 100%;
+        height: auto;
+        transition: box-shadow 0.3s;
     }
-    @media (max-width: 900px) {
-        .modern-modal-paper { padding: 1vw 0.5vw; min-width: 0; }
-        .modern-modal { min-width: 0; }
+    .pdfjs-canvas:hover {
+        box-shadow: 0 8px 48px #aab6ff44, 0 2px 8px #23234a55;
+    }
+    @media (max-width: 1200px) {
+        .modern-modal {
+            max-width: 98vw;
+            max-height: 98vh;
+        }
+        .modern-modal-paper {
+            max-height: 70vh;
+        }
     }
     @media (max-width: 600px) {
-        .modern-modal-paper { padding: 0.5vw 0.2vw; min-width: 0; }
-        .modern-modal { min-width: 0; }
+        .modern-modal {
+            max-width: 98vw;
+            max-height: 98vh;
+            border-radius: 18px;
+        }
+        .modern-modal-paper {
+            max-height: 50vh;
+        }
+        .modern-modal-header { padding: 0.7rem 1rem 0.7rem 1rem; min-height: 44px; }
+        .modern-modal-title { font-size: 1.1rem; }
+        .modern-modal-pdficon { font-size: 1.3rem; }
+        .modern-modal-close, .modern-modal-action { width: 38px; height: 38px; font-size: 1.1rem; top: 8px; }
+        #downloadResumeBtn { right: 60px; }
+        #printResumeBtn { right: 36px; }
+        #closeResumeModal { right: 8px; }
     }
     </style>
 </body>
