@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Media</title>
+    <meta name="description" content="Upload and share your media with Karthik Prasad M's portfolio. A secure and user-friendly platform for sharing photos and videos.">
+    <meta name="keywords" content="Media Upload, Photo Sharing, Video Sharing, Karthik Prasad M, Portfolio, Creative Content">
+    <meta name="author" content="Karthik Prasad M">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Media Upload | Karthik Prasad M's Portfolio">
+    <meta property="og:description" content="Share your photos and videos through our secure upload platform">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mnmnts.com/upload">
+    <title>Media Upload | Karthik Prasad M's Portfolio</title>
     <link rel="preconnect" href="https://wallpaperaccess.com">
     <link rel="stylesheet" href="galaxy.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,68 +25,63 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body class="upload-page">
-    <div class="stars"></div>
-    <nav class="navbar">
-        <div class="social-icons">
-            <!-- Instagram -->
-            <a href="https://www.instagram.com/kkarthhikk" target="_blank">
-                <img src="https://img.icons8.com/?size=48&id=DpOQ6G5p47f0&format=png" alt="Instagram" loading="lazy">
+    <div class="stars" role="presentation" aria-hidden="true"></div>
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="social-icons" role="list" aria-label="Social media links">
+            <a href="https://www.instagram.com/kkarthhikk" target="_blank" rel="noopener noreferrer" aria-label="Follow me on Instagram">
+                <img src="https://img.icons8.com/?size=48&id=DpOQ6G5p47f0&format=png" alt="Instagram icon" loading="lazy">
             </a>
-            <!-- LinkedIn -->
-            <a href="https://www.linkedin.com/in/karthik-prasad-m-7673b5356/" target="_blank">
-                <img src="https://img.icons8.com/?size=100&id=447&format=png" alt="LinkedIn" loading="lazy">
+            <a href="https://www.linkedin.com/in/karthik-prasad-m-7673b5356/" target="_blank" rel="noopener noreferrer" aria-label="Connect with me on LinkedIn">
+                <img src="https://img.icons8.com/?size=100&id=447&format=png" alt="LinkedIn icon" loading="lazy">
             </a>
-            <!-- Pinterest -->
-            <a href="https://pin.it/70AOzYsfW" target="_blank">
-                <img src="https://img.icons8.com/?size=48&id=CeRsUJCNL4go&format=png" alt="Pinterest" loading="lazy">
+            <a href="https://pin.it/70AOzYsfW" target="_blank" rel="noopener noreferrer" aria-label="Follow me on Pinterest">
+                <img src="https://img.icons8.com/?size=48&id=CeRsUJCNL4go&format=png" alt="Pinterest icon" loading="lazy">
             </a>
-            <!-- Spotify -->
-            <a href="https://open.spotify.com/user/31g54rthdkjwc7tk2yzwlkptbbqi" target="_blank">
-                <img src="https://img.icons8.com/?size=100&id=6707&format=png" alt="Spotify" loading="lazy">
+            <a href="https://open.spotify.com/user/31g54rthdkjwc7tk2yzwlkptbbqi" target="_blank" rel="noopener noreferrer" aria-label="Follow me on Spotify">
+                <img src="https://img.icons8.com/?size=100&id=6707&format=png" alt="Spotify icon" loading="lazy">
             </a>
-            <a href="https://github.com/Karthikprasadm" target="_blank">
-                <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="github">
+            <a href="https://github.com/Karthikprasadm" target="_blank" rel="noopener noreferrer" aria-label="View my GitHub profile">
+                <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="GitHub icon" loading="lazy">
             </a>
         </div>
 
-        <h2 class="logo"></h2>
+        <h2 class="logo" aria-label="Portfolio Logo"></h2>
 
         <div class="dropdown">
-            <button class="dropbtn" aria-label="Open menu">Menu</button>
-            <div class="dropdown-content">
-                <a href="index.html" id="backToGallery">Back to Gallery</a>
-                <a href="about.html">Know me <3</a>
+            <button class="dropbtn" aria-expanded="false" aria-controls="menuContent">Menu</button>
+            <div class="dropdown-content" id="menuContent" role="menu">
+                <a href="index.html" id="backToGallery" role="menuitem">Back to Gallery</a>
+                <a href="about.html" role="menuitem">Know me <span aria-label="heart">❤️</span></a>
             </div>
         </div>
     </nav>
 
-    <div class="upload-container">
+    <main class="upload-container">
         <h1>Upload Your Media</h1>
-        <form id="uploadForm" class="upload-form">
+        <form id="uploadForm" class="upload-form" role="form" aria-label="Media upload form">
             <label for="mediaUpload" class="custom-file-upload">Choose Photos/Videos</label>
-            <input type="file" id="mediaUpload" name="media" accept="image/*, video/*" multiple>
+            <input type="file" id="mediaUpload" name="media" accept="image/*, video/*" multiple aria-label="Select media files to upload">
 
-            <button type="button" id="uploadButton" aria-label="Upload Media">Upload</button>
+            <button type="button" id="uploadButton" class="upload-button" aria-label="Upload selected media">Upload</button>
 
-            <div id="progressBar" class="progress-bar">
+            <div id="progressBar" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                 <div id="progress" class="progress"></div>
             </div>
 
-            <div id="errorMessage" class="error-message"></div>
+            <div id="errorMessage" class="error-message" role="alert" aria-live="polite"></div>
         </form>
 
-        <div id="preview"></div>
-        <div id="uploadedMedia" class="gallery"></div>
-    </div>
+        <section id="preview" class="preview-section" aria-label="Media preview"></section>
+        <section id="uploadedMedia" class="gallery" aria-label="Uploaded media gallery"></section>
+    </main>
 
-    <!-- Bottom-left text -->
-    <div class="bottom-left-text">
+    <footer class="bottom-left-text" role="contentinfo">
         &copy; 2025 Mnmnts. All rights reserved.
-    </div>
+    </footer>
 
-    <div class="yoda-favicon" id="yodaResumeBtn" style="cursor:pointer;">
-        <div class="yoda-modern-box"> my resume!!</div>
-        <img src="icons8-baby-yoda-color-favicons/web/icons8-baby-yoda-color-48.png" alt="Baby Yoda" />
+    <div class="yoda-favicon" id="yodaResumeBtn" role="button" tabindex="0" aria-label="View resume">
+        <div class="yoda-modern-box">my resume!!</div>
+        <img src="icons8-baby-yoda-color-favicons/web/icons8-baby-yoda-color-48.png" alt="Baby Yoda icon" />
     </div>
     <div id="resumeModal" class="resume-modal-overlay" style="display:none;">
         <div class="stars"></div>
