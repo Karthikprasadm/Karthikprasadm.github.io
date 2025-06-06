@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .error-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .error-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .error-topright {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            z-index: 2;
+        }
+
+        .error-message {
+            color: lightpink;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+            background: rgba(0,0,0,0.4);
+            padding: 6px 16px;
+            border-radius: 6px;
+        }
+
+        .home-button {
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            color: lightyellow;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-weight: bolder;
+            transition: background 0.3s ease, transform 0.2s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
+            z-index: 1;
+            margin-bottom: 0;
+            box-shadow: none;
+        }
+
+        .home-button:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(1.08);
+            box-shadow: 0 6px 24px 0 rgba(0,0,0,0.18), 0 1.5px 4px 0 rgba(255,255,255,0.12);
+        }
+
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+            .error-message {
+                font-size: 18px;
+                padding: 4px 10px;
+            }
+            .error-topright {
+                top: 10px;
+                right: 10px;
+            }
+            .home-button {
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <video class="error-video" controls autoplay loop muted playsinline>
+            <source src="./404_error/error.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="error-topright">
+            <div class="error-message">404 - Page Not Found</div>
+            <a href="index.html" class="home-button">Return to Home</a>
+        </div>
+    </div>
+    <script>
+        // Add event listener to check if video loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.querySelector('.error-video');
+            video.addEventListener('error', function(e) {
+                console.error('Error loading video:', e);
+                alert('Error loading video. Please check the console for details.');
+            });
+            video.addEventListener('loadeddata', function() {
+                console.log('Video loaded successfully');
+            });
+        });
+    </script>
+</body>
+</html> 
