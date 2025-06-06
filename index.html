@@ -13,70 +13,78 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Jockey+One&display=swap" rel="stylesheet">
+    <meta name="description" content="Karthik Prasad M's digital museum of moments – a creative portfolio and artistic playground for exploring time, memory, and storytelling through web, images, and videos.">
+    <meta name="keywords" content="Karthik Prasad, Portfolio, Web Developer, Creative, Gallery, Digital Museum, Storytelling, Images, Videos, Moments, Memory, Art, Tech, Frontend, JavaScript, HTML, CSS">
+    <meta name="author" content="Karthik Prasad M">
+    <!-- Open Graph tags for social sharing -->
+    <meta property="og:title" content="Karthik Prasad M | Museum of Moments">
+    <meta property="og:description" content="A creative portfolio and digital museum of moments by Karthik Prasad M. Explore time, memory, and storytelling through interactive web experiences.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://karthikprasadm.github.io/">
+    <meta property="og:image" content="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/875320.jpg?updatedAt=1748107186320&v=2">
+    <!-- End SEO meta tags -->
+    <h1 style="display:none;">Karthik Prasad M | Web Developer, Storyteller, Creative Portfolio</h1>
 </head>
 <body>
 
     <div class="stars"></div>
-    <nav class="navbar">
-        <div class="social-icons">
-            <a href="https://www.instagram.com/kkarthhikk" target="_blank">
-                <img src="https://img.icons8.com/?size=48&id=DpOQ6G5p47f0&format=png" alt="Instagram">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="social-icons" aria-label="Social links">
+            <a href="https://www.instagram.com/kkarthhikk" target="_blank" aria-label="Instagram">
+                <img src="https://img.icons8.com/?size=48&id=DpOQ6G5p47f0&format=png" alt="Instagram icon">
             </a>
-            <a href="https://www.linkedin.com/in/karthik-prasad-m-7673b5356/" target="_blank">
-                <img src="https://img.icons8.com/?size=100&id=447&format=png" alt="LinkedIn">
+            <a href="https://www.linkedin.com/in/karthik-prasad-m-7673b5356/" target="_blank" aria-label="LinkedIn">
+                <img src="https://img.icons8.com/?size=100&id=447&format=png" alt="LinkedIn icon">
             </a>
-            <a href="https://pin.it/70AOzYsfW" target="_blank">
-                <img src="https://img.icons8.com/?size=48&id=CeRsUJCNL4go&format=png" alt="Pinterest">
+            <a href="https://pin.it/70AOzYsfW" target="_blank" aria-label="Pinterest">
+                <img src="https://img.icons8.com/?size=48&id=CeRsUJCNL4go&format=png" alt="Pinterest icon">
             </a>
-            <a href="https://open.spotify.com/user/31g54rthdkjwc7tk2yzwlkptbbqi" target="_blank">
-                <img src="https://img.icons8.com/?size=100&id=6707&format=png" alt="Spotify">
+            <a href="https://open.spotify.com/user/31g54rthdkjwc7tk2yzwlkptbbqi" target="_blank" aria-label="Spotify">
+                <img src="https://img.icons8.com/?size=100&id=6707&format=png" alt="Spotify icon">
             </a>
-            <a href="https://github.com/Karthikprasadm" target="_blank">
-                <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="github">
+            <a href="https://github.com/Karthikprasadm" target="_blank" aria-label="GitHub">
+                <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="GitHub icon">
             </a>
         </div>
-
-        <h2 class="logo"></h2>
-
-        <button id="slideshowToggle" class="moon-button">🌙</button>
-
+        <h2 class="logo" aria-label="Site logo"></h2>
+        <button id="slideshowToggle" class="moon-button" aria-label="Toggle slideshow mode">🌙</button>
         <div class="dropdown">
-            <button class="dropbtn">Menu</button>
-            <div class="dropdown-content">
-                <a href="about.html">Know me &lt;3</a>
-                <a href="upload.html">Image Upload</a>
+            <button class="dropbtn" aria-label="Open menu" tabindex="0">Menu</button>
+            <div class="dropdown-content" role="menu">
+                <a href="about.html" role="menuitem">Know me &lt;3</a>
+                <a href="upload.html" role="menuitem">Image Upload</a>
             </div>
         </div>
     </nav>
 
     <div class="container">
         <div class="main-image">
-            <img id="displayedImage" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/875320.jpg?updatedAt=1748107186320&v=2" alt="Main image">
+            <img id="displayedImage" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/875320.jpg?updatedAt=1748107186320&v=2" alt="Main gallery image" loading="eager">
         </div>
 
         <div class="thumbnails">
-            <img class="thumb active" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/640842.jpg?updatedAt=1748100170774" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/640842.jpg?updatedAt=1748100170774" alt="Pic 1" onclick="changeImage(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/640842.jpg?updatedAt=1748100170774')">
-            <img class="thumb" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/223952.jpg?updatedAt=1748100170758" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/223952.jpg?updatedAt=1748100170758" alt="Pic 2" onclick="changeImage(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/223952.jpg?updatedAt=1748100170758')">
-            <img class="thumb" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/515254.jpg?updatedAt=1748100541322" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/515254.jpg?updatedAt=1748100541322" alt="Pic 3" onclick="changeImage(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/515254.jpg?updatedAt=1748100541322')">
-            <img class="thumb" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/1588.jpg?updatedAt=1748100170098" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/1588.jpg?updatedAt=1748100170098" alt="Pic 4" onclick="changeImage(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/1588.jpg?updatedAt=1748100170098')">
+            <img class="thumb active" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/640842.jpg?updatedAt=1748100170774" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/640842.jpg?updatedAt=1748100170774" alt="Gallery thumbnail 1" onclick="changeImage(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/640842.jpg?updatedAt=1748100170774')" tabindex="0" loading="lazy">
+            <img class="thumb" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/223952.jpg?updatedAt=1748100170758" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/223952.jpg?updatedAt=1748100170758" alt="Gallery thumbnail 2" onclick="changeImage(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/223952.jpg?updatedAt=1748100170758')" tabindex="0" loading="lazy">
+            <img class="thumb" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/515254.jpg?updatedAt=1748100541322" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/515254.jpg?updatedAt=1748100541322" alt="Gallery thumbnail 3" onclick="changeImage(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/515254.jpg?updatedAt=1748100541322')" tabindex="0" loading="lazy">
+            <img class="thumb" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/1588.jpg?updatedAt=1748100170098" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/1588.jpg?updatedAt=1748100170098" alt="Gallery thumbnail 4" onclick="changeImage(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/1588.jpg?updatedAt=1748100170098')" tabindex="0" loading="lazy">
         </div>
 
         <!-- Video Section -->
         <div class="video-container"> 
-            <video id="displayedVideo" controls>
-                <source src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/beautiful.mp4?updatedAt=1747500960916" type="video/mp4">
+            <video id="displayedVideo" controls aria-label="Main gallery video" preload="none" poster="">
+                <source data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/beautiful.mp4?updatedAt=1747500960916" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         </div>
 
         <div class="video-thumbnails">
-            <img class="video-thumb active" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/cow1.jpg?updatedAt=1747507686444" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/beautiful.mp4?updatedAt=1747500960916" alt="Video 1" onclick="changeVideo(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/beautiful.mp4?updatedAt=1747500960916')">
+            <img class="video-thumb active" src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/cow1.jpg?updatedAt=1747507686444" data-src="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/beautiful.mp4?updatedAt=1747500960916" alt="Video thumbnail 1" onclick="changeVideo(this, 'https://ik.imagekit.io/ijv7nmfqx/Website_showcase/beautiful.mp4?updatedAt=1747500960916')" tabindex="0" loading="lazy">
         </div>
     </div>
 
-    <div class="yoda-favicon" id="yodaResumeBtn" style="cursor:pointer;">
+    <div class="yoda-favicon" id="yodaResumeBtn" style="cursor:pointer;" aria-label="Open resume modal">
         <div class="yoda-modern-box"> my resume!!</div>
-        <img src="icons8-baby-yoda-color-favicons/web/icons8-baby-yoda-color-48.png" alt="Baby Yoda" />
+        <img src="icons8-baby-yoda-color-favicons/web/icons8-baby-yoda-color-48.png" alt="Baby Yoda favicon" />
     </div>
     <div id="resumeModal" class="resume-modal-overlay" style="display:none;">
         <div class="stars"></div>
@@ -421,6 +429,17 @@
     </style>
 
     <script src="script.js" defer></script>
+    <script>
+    // Lazy load video source
+    document.addEventListener('DOMContentLoaded', function() {
+        var video = document.getElementById('displayedVideo');
+        var source = video.querySelector('source');
+        if (source && source.dataset.src) {
+            source.src = source.dataset.src;
+            video.load();
+        }
+    });
+    </script>
 
 </body>
 </html>

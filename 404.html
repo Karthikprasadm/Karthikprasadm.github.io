@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Page Not Found</title>
+    <meta name="description" content="404 error page for Karthik Prasad M's digital museum of moments. Creative portfolio and artistic playground for exploring time, memory, and storytelling.">
+    <meta name="keywords" content="404, Not Found, Karthik Prasad, Portfolio, Web Developer, Creative, Gallery, Digital Museum, Storytelling, Images, Videos, Art, Tech, Frontend, JavaScript, HTML, CSS">
+    <meta name="author" content="Karthik Prasad M">
+    <!-- Open Graph tags for social sharing -->
+    <meta property="og:title" content="404 - Page Not Found | Karthik Prasad M | Museum of Moments">
+    <meta property="og:description" content="404 error page for Karthik Prasad M's digital museum of moments. Creative portfolio and artistic playground for exploring time, memory, and storytelling.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://karthikprasadm.github.io/404.html">
+    <meta property="og:image" content="https://ik.imagekit.io/ijv7nmfqx/Website_showcase/875320.jpg?updatedAt=1748107186320&v=2">
+    <!-- End SEO meta tags -->
+    <h1 style="display:none;">404 - Page Not Found | Karthik Prasad M | Web Developer, Storyteller, Creative Portfolio</h1>
     <style>
         body {
             margin: 0;
@@ -95,13 +106,13 @@
 </head>
 <body>
     <div class="error-container">
-        <video class="error-video" controls autoplay loop muted playsinline>
+        <video class="error-video" controls autoplay loop muted playsinline aria-label="Error video" loading="lazy">
             <source src="./404_error/error.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        <div class="error-topright">
-            <div class="error-message">404 - Page Not Found</div>
-            <a href="index.html" class="home-button">Return to Home</a>
+        <div class="error-topright" role="region" aria-label="Error message and navigation">
+            <div class="error-message" role="alert">404 - Page Not Found</div>
+            <a href="index.html" class="home-button" aria-label="Return to Home" tabindex="0">Return to Home</a>
         </div>
     </div>
     <script>

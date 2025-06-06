@@ -9,6 +9,7 @@ body {
     overflow-x: hidden;
     position: relative;
     line-height: 1.6;
+    scroll-behavior: smooth;
 }
 
 /* Galaxy Background */
