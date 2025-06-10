@@ -40,8 +40,18 @@ A minimalist, interactive web experience designed as a digital museum of persona
 - Add admin features for managing media
 - Integrate analytics or SEO enhancements
 
-## 🤝 Contributing
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+## 🖼️ Favicon & Device Support
+- Multi-device favicon support: iOS, Android, Windows, desktop browsers, and PWA.
+- All favicon and icon files are in the `favicon/` folder and referenced in the HTML head for maximum compatibility.
+- Root `/favicon.ico` is present for universal browser support.
+- If favicon does not appear, try a hard refresh or clear browser cache.
+
+## 🛡️ Technical Polish
+- **SEO optimized**: meta tags, Open Graph, sitemap.xml
+- **Accessibility**: ARIA labels, keyboard navigation, color contrast
+- **Performance**: Lazy loading for images, smooth scrolling
+- **Responsive**: Works on all devices and screen sizes
+- **Modern favicon setup**: All platforms and PWA supported
 
 ## 📄 License
 All Rights Reserved.
