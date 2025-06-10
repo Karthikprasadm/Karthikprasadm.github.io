@@ -130,6 +130,11 @@ app.use((err, req, res, next) => {
     next();
 });
 
+// Catch-all for 404 errors (must be after all other routes)
+app.use((req, res, next) => {
+  res.status(404).sendFile(__dirname + '/404.html');
+});
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

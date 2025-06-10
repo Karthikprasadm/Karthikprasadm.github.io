@@ -77,7 +77,7 @@
         }
 
         .error-message {
-            color: lightpink;
+            color:darkred;
             font-family: Arial, sans-serif;
             font-size: 24px;
             font-weight: bold;
@@ -91,7 +91,7 @@
         .home-button {
             padding: 10px 20px;
             background: rgba(0, 0, 0, 0.4);
-            color: lightyellow;
+            color:tan;
             text-decoration: none;
             border-radius: 5px;
             font-family: Arial, sans-serif;
@@ -126,27 +126,14 @@
 </head>
 <body>
     <div class="error-container">
-        <video class="error-video" controls autoplay loop muted playsinline aria-label="Error video" loading="lazy">
-            <source src="./404_error/error.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <img class="error-video" src="./404_error/error.gif" alt="Error: Page Not Found" loading="lazy" style="object-fit:cover; width:100vw; height:100vh;" />
         <div class="error-topright" role="region" aria-label="Error message and navigation">
             <div class="error-message" role="alert">404 - Page Not Found</div>
             <a href="index.html" class="home-button" aria-label="Return to Home" tabindex="0">Return to Home</a>
         </div>
     </div>
     <script>
-        // Add event listener to check if video loads
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.querySelector('.error-video');
-            video.addEventListener('error', function(e) {
-                console.error('Error loading video:', e);
-                alert('Error loading video. Please check the console for details.');
-            });
-            video.addEventListener('loadeddata', function() {
-                console.log('Video loaded successfully');
-            });
-        });
+        // Optionally, you can add a check for image loading errors here if desired.
     </script>
 </body>
 </html> 
