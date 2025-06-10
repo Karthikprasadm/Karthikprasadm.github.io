@@ -72,7 +72,6 @@
             <div class="dropdown-content" role="menu">
                 <a href="index.html" role="menuitem">Back to Gallery</a>
                 <a href="upload.html" role="menuitem">Image Upload</a>
-                <a href="archive.html" role="menuitem">Archive</a>
             </div>
         </div>
     </nav>
@@ -80,19 +79,20 @@
         <section class="about-bio">
             <h1>Hey, I'm karthik <3</h1>
             <p>Welcome to my little corner of the internet!! </p>
-            <p>I'm a student passionate about crafting accessible, pixel-perfect user interfaces that blend thoughtful design with engineering, My favorite work lies at the intersection of design and development, creating experiences that not only look great but are meticulously built for performance and usability.
+            <p>I'm a student who's a bit obsessed with building accessible, pixel-perfect user interfaces — where design meets engineering. I love crafting experiences that look amazing and actually work well. Thoughtful, fast, and usable — that's the vibe..
             </p>
             <ul class="about-list">
-                <li><strong>Interests:</strong> geopolitics…currentaffairs, vibing with music, playing GAMES and telling stories through my camera </li>
-                <li><strong>Skills:</strong> making cool stuff on the web and content that doesn't make you yawn </li>
+                <li><strong>Interests:</strong> geopolitics and the now, waving through music, GAMING and turning mnmnts into stories </li>
+                <li><strong>Skills:</strong> making cool stuff on the web + content that doesn't make you yawn </li>
                 <li><strong>Connect:</strong>  socials are up top — don't be shy</li>
             </ul>
         </section>
         <section class="about-extra">
             <h2>More About Me</h2>
-            <p>In my spare time, I'm usually climbing, gaming, going through my daily current affairs, hanging out with shimmy (pet turtle) and my family, or running around the city with my friends.  </p>
-            <p>THANKS for stopping by. stay weird!!</p>
+            <p>When I'm not building or learning, I'm probably climbing, gaming, doom-scrolling world updates, hanging out with shimmy (pet turtle) and my fam, or running around the city with my friends.  </p>
+            <p>THANKS for stopping by</p>
         </section>
+        <div class="about-corner-odd-wandering">stay odd. stay wandering!!</div>
     </main>
     <div class="bottom-left-text">
         // ...
@@ -395,6 +395,27 @@
         #downloadResumeBtn { right: 60px; }
         #printResumeBtn { right: 36px; }
         #closeResumeModal { right: 8px; }
+    }
+    .about-container {
+        position: relative;
+        padding-top: 2.5rem;
+    }
+    .about-container h1:first-child {
+        margin-top: 0.5rem;
+    }
+    .about-corner-odd-wandering {
+        position: absolute;
+        right: 1.1vw;
+        bottom: 1.1vh;
+        font-style: italic;
+        font-size: 0.85em;
+        color:#bfcaffcc;
+        opacity: 0.70;
+        z-index: 30;
+        pointer-events: none;
+        font-family: 'Montserrat', 'Playfair Display', serif;
+        letter-spacing: 0.02em;
+        user-select: none;
     }
     </style>
 </body>
