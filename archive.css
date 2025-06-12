@@ -1,0 +1,849 @@
+body {
+    background: linear-gradient(to bottom, #1a1a1a, #000000);
+    color: #e0e0e0;
+    font-family: 'Montserrat', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    animation: fadeIn 0.5s ease-in-out;
+    scroll-behavior: smooth;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+html, body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://www.transparenttextures.com/patterns/stardust.png');
+    opacity: 0.8;
+    animation: twinkling 100s linear infinite;
+    z-index: -1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 32px;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+}
+
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: #282828;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.filter-btn:focus {
+    outline: none;
+}
+
+.filter-btn.active, .filter-btn:hover {
+    background: var(--accent);
+    color: #222;
+    box-shadow: none;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    background: #181818;
+}
+
+.gallery-item:focus {
+    outline: none;
+    box-shadow: 0 8px 32px rgba(127,143,255,0.18);
+    transform: translateY(-4px);
+}
+
+.gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* Lazy loading styles */
+.gallery-item img.lazy {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item img:not(.lazy) {
+    opacity: 1;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.07);
+}
+
+.caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(24,24,24,0.8);
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.gallery-item:hover .caption,
+.gallery-item:focus .caption {
+    opacity: 1;
+}
+
+/* Lightbox */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.92);
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox-img {
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    font-size: 2.5rem;
+    color: #fff;
+    cursor: pointer;
+    background: rgba(0,0,0,0.5);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.lightbox-close:hover,
+.lightbox-close:focus {
+    background: rgba(255, 179, 71, 0.8);
+    color: #222;
+    transform: scale(1.1);
+    outline: 2px solid #ffb347;
+    outline-offset: 2px;
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Loading indicator for lazy images */
+.gallery-item::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #333;
+    border-top: 2px solid #ffb347;
+    border-radius: 50%;
+    animation: loading-spin 1s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.gallery-item img.lazy + ::before {
+    opacity: 1;
+}
+
+@keyframes loading-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Fullscreen styles */
+.lightbox:-webkit-full-screen {
+    background: rgba(0,0,0,0.98);
+}
+
+.lightbox:-moz-full-screen {
+    background: rgba(0,0,0,0.98);
+}
+
+.lightbox:fullscreen {
+    background: rgba(0,0,0,0.98);
+}
+
+/* Page transitions */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .gallery-item img { 
+        height: 180px; 
+    }
+    
+    .container { 
+        padding: 20px 10px; 
+    }
+    
+    .lightbox-close { 
+        top: 20px; 
+        right: 20px; 
+        font-size: 2rem;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .filters {
+        gap: 8px;
+    }
+    
+    .filter-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-item img { 
+        height: 140px; 
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .gallery {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .filter-btn {
+        border: 2px solid currentColor;
+    }
+    
+    .gallery-item {
+        border: 1px solid #fff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .gallery-item img,
+    .filter-btn,
+    .lightbox-img,
+    .lightbox-close {
+        transition: none;
+    }
+    
+    .stars {
+        animation: none;
+    }
+    
+    body {
+        animation: none;
+    }
+}
+
+@keyframes twinkling {
+    from { background-position: 0 0; }
+    to { background-position: -1000px 1000px; }
+}
+
+.gallery-item .project-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(24,24,24,0.97);
+    color: #fff;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 32px 16px 24px 16px;
+    text-align: center;
+    transition: opacity 0.3s cubic-bezier(.4,0,.2,1), background 0.3s cubic-bezier(.4,0,.2,1);
+    z-index: 2;
+    pointer-events: none;
+    max-height: 95%;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+}
+.gallery-item:hover .project-overlay,
+.gallery-item:focus .project-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+.gallery-item:hover img,
+.gallery-item:focus img {
+    filter: blur(2px) brightness(0.7);
+    transition: filter 0.3s cubic-bezier(.4,0,.2,1);
+}
+.gallery-item:hover .caption,
+.gallery-item:focus .caption {
+    opacity: 0.1;
+    transition: opacity 0.3s cubic-bezier(.4,0,.2,1);
+}
+.project-overlay h3 {
+    margin: 0 0 2px 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: center;
+    max-width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    line-height: 1.2;
+    min-height: 2.4em;
+    background: transparent;
+    z-index: 2;
+}
+.project-overlay p {
+    word-break: break-word;
+    max-width: 95%;
+    margin: 0 auto 12px auto;
+    font-size: 1rem;
+    overflow: visible;
+    display: block;
+    text-overflow: initial;
+}
+.project-overlay .tech-stack {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+.project-overlay .tech-stack span {
+    background: rgba(255,179,71,0.15);
+    color: #ffb347;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+.project-overlay .project-links {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+.project-overlay .project-links a {
+    background: #ffb347;
+    color: #222;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.project-overlay .project-links a:hover {
+    background: #fff;
+    color: #ffb347;
+}
+.project-overlay::-webkit-scrollbar {
+    display: none; /* Webkit browsers */
+}
+
+.project-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, #1a1a1a, #000000 90%);
+    overflow: hidden;
+    transition: opacity 0.3s cubic-bezier(.4,0,.2,1);
+    opacity: 0;
+    pointer-events: none;
+}
+.project-modal-overlay[style*="display: flex"] {
+    opacity: 1;
+    pointer-events: auto;
+    animation: modalFadeIn 0.5s cubic-bezier(.4,0,.2,1);
+}
+.project-modal-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0;
+    background: url('https://www.transparenttextures.com/patterns/stardust.png');
+    opacity: 0.7;
+    animation: twinkling 100s linear infinite;
+    pointer-events: none;
+}
+.project-modal-content {
+    position: relative;
+    background: rgba(28, 28, 36, 0.92);
+    border-radius: 18px;
+    box-shadow: 0 8px 40px 0 #000a, 0 1.5px 4px #23234a33;
+    max-width: 720px;
+    width: 96vw;
+    max-height: 90vh;
+    padding: 32px 24px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    backdrop-filter: blur(12px) saturate(1.1);
+    -webkit-backdrop-filter: blur(12px) saturate(1.1);
+    animation: modalSlideIn 0.6s cubic-bezier(.4,0,.2,1);
+    transition: transform 0.5s cubic-bezier(.4,0,.2,1), filter 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
+    margin-top: 36px;
+    margin-bottom: 36px;
+    padding-top: 0;
+    padding-bottom: 32px;
+    scrollbar-width: none; /* Firefox */
+}
+.project-modal-content::-webkit-scrollbar {
+    display: none; /* Webkit browsers */
+}
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes modalSlideIn {
+    from { transform: translateY(40px) scale(0.98); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+.project-modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: rgba(44, 46, 60, 0.92);
+    border: none;
+    color: #e0e0e0;
+    font-size: 2rem;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.14s;
+    outline: none;
+    box-shadow: 0 2px 8px #23234a33;
+}
+.project-modal-close:hover, .project-modal-close:focus {
+    background: #ffb347;
+    color: #23234a;
+    box-shadow: 0 4px 16px #ffb34733;
+    transform: scale(1.08);
+}
+.project-modal-img {
+    display: block;
+    margin: 31px auto 45px auto;
+    width: 90%;
+    max-width: 480px;
+    aspect-ratio: 16/9;
+    height: auto;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px #0006, 0 1.5px 4px #23234a33;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+.project-modal-img:hover {
+    box-shadow: 0 4px 24px #0008, 0 1.5px 4px #23234a33;
+    transform: scale(1.02);
+}
+#modalProjectName {
+    color: #ffb347;
+    margin-bottom: 18px;
+    margin-top: 0;
+    font-size: 1.7rem;
+    text-align: center;
+    letter-spacing: 1px;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-weight: 700;
+}
+.project-modal-tech {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+.project-modal-tech span {
+    background: rgba(255,179,71,0.15);
+    color: #ffb347;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+#modalProjectDesc {
+    color: #e0e0e0;
+    margin-bottom: 28px;
+    text-align: center;
+    font-size: 1.08rem;
+    line-height: 1.7;
+}
+.project-modal-links {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+.project-modal-links a {
+    background: linear-gradient(90deg, #ffb347 60%, #ff8c42 100%);
+    color: #23234a;
+    padding: 8px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px #ffb34733;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.project-modal-links a:hover {
+    background: #fff;
+    color: #ffb347;
+    box-shadow: 0 4px 16px #ffb34733;
+    transform: translateY(-2px) scale(1.04);
+}
+.project-modal-readme {
+    background: rgba(30,30,30,0.85);
+    border-radius: 12px;
+    padding: 16px 12px;
+    margin-top: 24px;
+    width: 100%;
+    max-width: 420px;
+    overflow-x: auto;
+    box-shadow: 0 2px 8px #23234a33;
+    font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+    color: #bfcaff;
+    font-size: 1rem;
+    transition: box-shadow 0.3s;
+}
+.project-modal-readme h3 {
+    color: #ffb347;
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-weight: 600;
+}
+#modalReadmeSnippet {
+    color: #bfcaff;
+    font-size: 0.98rem;
+    font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+    white-space: pre-wrap;
+    margin: 0;
+}
+@media (max-width: 800px) {
+    .project-modal-content {
+        max-width: 98vw;
+    }
+}
+
+.project-modal-overlay.closing {
+    opacity: 0 !important;
+    pointer-events: none;
+    transform: scale(0.95);
+    transition: opacity 0.5s cubic-bezier(.4,0,.2,1), transform 0.5s cubic-bezier(.4,0,.2,1);
+}
+.project-modal-overlay.closing .project-modal-content {
+    transform: translateY(60px) scale(0.94);
+    filter: blur(10px) brightness(0.7);
+    opacity: 0.6;
+    transition: transform 0.5s cubic-bezier(.4,0,.2,1), filter 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+/* Accent color variables */
+:root {
+  --accent: #7f8fff;
+  --accent-hover: #bfcaff;
+  --accent-bg: rgba(127,143,255,0.15);
+  --accent-bg-hover: rgba(191,202,255,0.15);
+}
+
+#modalProjectName,
+.project-modal-readme h3 {
+    color: var(--accent);
+}
+.project-modal-tech span {
+    background: var(--accent-bg);
+    color: var(--accent);
+}
+.project-modal-links a {
+    background: linear-gradient(90deg, var(--accent) 60%, var(--accent-hover) 100%);
+    color: #23234a;
+    box-shadow: 0 2px 8px var(--accent-bg);
+}
+.project-modal-links a:hover {
+    background: #fff;
+    color: var(--accent);
+    box-shadow: 0 4px 16px var(--accent-bg-hover);
+}
+.project-modal-close:hover, .project-modal-close:focus {
+    background: var(--accent);
+    color: #23234a;
+    box-shadow: 0 4px 16px var(--accent-bg-hover);
+    transform: scale(1.08);
+}
+/* Tech tags in gallery overlay */
+.project-overlay .tech-stack span {
+    background: var(--accent-bg);
+    color: var(--accent);
+}
+.project-overlay h3 {
+    color: var(--accent);
+}
+.project-overlay .project-links a {
+    background: var(--accent);
+    color: #23234a;
+}
+.project-overlay .project-links a:hover {
+    background: #fff;
+    color: var(--accent);
+}
+.filter-btn.active, .filter-btn:hover {
+    background: var(--accent);
+    color: #222;
+    box-shadow: 0 4px 12px var(--accent-bg);
+}
+.project-modal-video {
+    display: block;
+    margin: 31px auto 45px auto;
+    width: 90%;
+    max-width: 480px;
+    aspect-ratio: 16/9;
+    height: auto;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px #0006, 0 1.5px 4px #23234a33;
+    background: #181828;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+.project-modal-video:hover {
+    box-shadow: 0 4px 24px #0008, 0 1.5px 4px #23234a33;
+    transform: scale(1.02);
+}
+#addProjectBtn {
+    /* Floating button styles removed */
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 2.2rem;
+    line-height: 1;
+    padding: 0 0 2px 0;
+    cursor: pointer;
+    transition: color 0.2s;
+    font-weight: 700;
+    box-shadow: none;
+    position: static;
+    width: auto;
+    height: auto;
+    display: inline;
+}
+#addProjectBtn:hover {
+    color: #bfcaff;
+    background: none;
+}
+#addProjectModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 3000;
+    background: rgba(24,24,36,0.92);
+    backdrop-filter: blur(10px) saturate(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+    justify-content: center;
+    align-items: center;
+    animation: modalFadeIn 0.4s cubic-bezier(.4,0,.2,1);
+}
+#addProjectModal .project-modal-content {
+    max-width: 480px;
+    width: 96vw;
+    margin: 0 auto;
+    background: rgba(28, 28, 36, 0.97);
+    border-radius: 18px;
+    box-shadow: 0 8px 40px 0 #000a, 0 1.5px 4px #23234a33;
+    padding: 32px 24px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+}
+#addProjectModal label {
+    font-size: 1rem;
+    color: #bfcaff;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: block;
+}
+#addProjectModal input, #addProjectModal textarea {
+    background: #23234a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-top: 2px;
+    margin-bottom: 10px;
+    width: 100%;
+    font-size: 1rem;
+    font-family: 'Montserrat', Arial, sans-serif;
+    resize: none;
+    box-sizing: border-box;
+}
+#addProjectModal input:focus, #addProjectModal textarea:focus {
+    outline: 2px solid var(--accent);
+    background: #23234a;
+}
+#addProjectModal button[type="submit"] {
+    background: var(--accent);
+    color: #23234a;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 22px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#addProjectModal button[type="submit"]:hover {
+    background: #bfcaff;
+}
+#addProjectModal button[type="button"] {
+    background: #23234a;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 22px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#addProjectModal button[type="button"]:hover {
+    background: #23234aee;
+}
+@media (max-width: 600px) {
+    #addProjectModal .project-modal-content {
+        padding: 18px 8px 18px 8px;
+    }
+}
+
+#refreshGithubBtn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 1.5rem;
+    line-height: 1;
+    padding: 0 0 2px 0;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    font-weight: 700;
+    margin-right: 12px;
+    outline: none;
+    border-radius: 50%;
+    box-shadow: none;
+    will-change: transform;
+}
+#refreshGithubBtn:hover, #refreshGithubBtn:focus {
+    color: #bfcaff;
+    background: none;
+    transform: none;
+    box-shadow: none;
+}
+.refresh-rotating {
+    animation: refreshSpinOnce 0.8s cubic-bezier(.4,0,.2,1) 1;
+}
+@keyframes refreshSpinOnce {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} 

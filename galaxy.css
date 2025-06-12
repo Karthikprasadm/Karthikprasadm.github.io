@@ -10,6 +10,12 @@ body {
     position: relative;
     line-height: 1.6;
     scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 /* Galaxy Background */
