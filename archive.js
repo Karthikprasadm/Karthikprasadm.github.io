@@ -14,12 +14,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 const img = entry.target;
                 img.src = img.dataset.src;
                 img.classList.remove('lazy');
-                imageObserver.unobserve(img);
+                observer.unobserve(img);
             }
         });
     });
 
     images.forEach(img => imageObserver.observe(img));
+
+    // Patch for dynamically added images (GitHub/user/artwork/photo)
+    const gallery = document.getElementById('gallery');
+    const observeNewImages = (node) => {
+        if (node.tagName === 'IMG' && node.classList.contains('lazy')) {
+            imageObserver.observe(node);
+        } else if (node.querySelectorAll) {
+            node.querySelectorAll('img.lazy').forEach(img => imageObserver.observe(img));
+        }
+    };
+    const galleryObserver = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(observeNewImages);
+        });
+    });
+    galleryObserver.observe(gallery, { childList: true, subtree: true });
 
     // Filtering
     const filterBtns = document.querySelectorAll('.filter-btn');
@@ -272,7 +288,10 @@ document.addEventListener('DOMContentLoaded', function() {
     projectCards.forEach((card, idx) => {
       const img = card.querySelector('img');
       if (img && projectData[idx] && projectData[idx].thumbnail) {
-        img.src = projectData[idx].thumbnail;
+        img.setAttribute('loading', 'lazy');
+        img.setAttribute('data-src', projectData[idx].thumbnail);
+        img.classList.add('lazy');
+        img.src = '';
       }
       card.addEventListener('click', function(e) {
         if (e.target.tagName === 'IMG') e.preventDefault();
@@ -387,6 +406,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Prevent lightbox if clicking overlay
         if (e.target.tagName === 'IMG') e.preventDefault();
         const img = card.querySelector('img');
+        img.setAttribute('loading', 'lazy');
+        img.setAttribute('data-src', img.src);
+        img.classList.add('lazy');
+        img.src = '';
         modalProjectImg.src = img.src;
         modalProjectImg.alt = img.alt;
         modalProjectName.textContent = img.alt;
@@ -457,7 +480,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Card image (use repo open graph image or fallback)
             const img = document.createElement('img');
             const thumbnail = `https://opengraph.githubassets.com/1/${githubUsername}/${repo.name}`;
-            img.src = thumbnail;
+            img.setAttribute('loading', 'lazy');
+            img.setAttribute('data-src', thumbnail);
+            img.classList.add('lazy');
+            img.src = '';
             img.alt = `${repo.name} GitHub project`;
             // Overlay (match manual project overlay)
             const overlay = document.createElement('div');
@@ -640,7 +666,10 @@ document.addEventListener('DOMContentLoaded', function() {
       card.setAttribute('role', 'gridcell');
       // Card image (thumbnail)
       const img = document.createElement('img');
-      img.src = data.thumbnail;
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('data-src', data.thumbnail);
+      img.classList.add('lazy');
+      img.src = '';
       img.alt = data.name + ' Thumbnail';
       card.appendChild(img);
       // Overlay
