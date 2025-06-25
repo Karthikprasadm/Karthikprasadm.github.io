@@ -632,16 +632,16 @@ document.addEventListener('DOMContentLoaded', function() {
       passwordInput.focus();
       // Set up password form to open ADD modal (not edit modal)
       passwordForm.onsubmit = function(e) {
-        e.preventDefault();
-        if (passwordInput.value === PROJECT_PASSWORD) {
-          passwordModal.style.display = 'none';
+      e.preventDefault();
+      if (passwordInput.value === PROJECT_PASSWORD) {
+        passwordModal.style.display = 'none';
           addNewProjectModal.style.display = 'flex';
           addNewProjectForm.reset();
-        } else {
-          passwordError.style.display = 'block';
-          passwordInput.value = '';
-          passwordInput.focus();
-        }
+      } else {
+        passwordError.style.display = 'block';
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
       };
     });
 
