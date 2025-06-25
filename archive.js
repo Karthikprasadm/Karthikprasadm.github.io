@@ -370,6 +370,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         // README
         modalReadmeSnippet.textContent = data.readme || 'No README available.';
+        // GitHub button functionality
+        const githubBtn = document.getElementById('modalGithubBtn');
+        if (githubBtn) {
+          if (data.github && data.github !== '#') {
+            githubBtn.style.display = 'flex';
+            githubBtn.onclick = function() {
+              window.open(data.github, '_blank');
+            };
+          } else {
+            githubBtn.style.display = 'none';
+          }
+        }
         // Show modal
         projectModal.style.display = 'flex';
         setTimeout(() => { projectModal.style.opacity = 1; }, 10);
@@ -418,6 +430,11 @@ document.addEventListener('DOMContentLoaded', function() {
         modalProjectTech.innerHTML = '';
         modalProjectLinks.innerHTML = '';
         modalReadmeSnippet.textContent = '';
+        // Hide GitHub button for artwork/photos (no GitHub link)
+        const githubBtn = document.getElementById('modalGithubBtn');
+        if (githubBtn) {
+          githubBtn.style.display = 'none';
+        }
         // Show modal
         projectModal.style.display = 'flex';
         setTimeout(() => { projectModal.style.opacity = 1; }, 10);
@@ -434,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
         projectModal.style.display = 'none';
         projectModal.classList.remove('closing');
         document.body.style.overflow = '';
-      }, 500);
+      }, 250);
     });
 
     // Close modal on overlay click
@@ -581,6 +598,14 @@ document.addEventListener('DOMContentLoaded', function() {
               }
               modalProjectLinks.innerHTML = '';
               modalReadmeSnippet.textContent = '';
+              // GitHub button functionality for GitHub repositories
+              const githubBtn = document.getElementById('modalGithubBtn');
+              if (githubBtn) {
+                githubBtn.style.display = 'flex';
+                githubBtn.onclick = function() {
+                  window.open(`https://github.com/${githubUsername}/${repo.name}`, '_blank');
+                };
+              }
               projectModal.style.display = 'flex';
               setTimeout(() => { projectModal.style.opacity = 1; }, 10);
               document.body.style.overflow = 'hidden';
@@ -849,6 +874,18 @@ document.addEventListener('DOMContentLoaded', function() {
         modalTech.appendChild(span);
       });
       modalReadme.textContent = data.readme || '';
+      // GitHub button functionality
+      const githubBtn = document.getElementById('modalGithubBtn');
+      if (githubBtn) {
+        if (data.github && data.github !== '#') {
+          githubBtn.style.display = 'flex';
+          githubBtn.onclick = function() {
+            window.open(data.github, '_blank');
+          };
+        } else {
+          githubBtn.style.display = 'none';
+        }
+      }
       // Media logic
       const hasVideo = !!data.video;
       const hasImg = !!data.img;
