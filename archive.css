@@ -866,6 +866,30 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     animation: refreshSpinOnce 0.8s cubic-bezier(.4,0,.2,1) 1;
 }
 @keyframes refreshSpinOnce {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Project name styling below cards */
+.project-name {
+    font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+    font-size: 0.75rem;
+    color: #ffffff;
+    text-align: left;
+    margin-top: 6px;
+    padding: 6px 8px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.5px;
+    font-weight: 400;
+    text-transform: uppercase;
+    animation: typewriter-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes typewriter-glow {
+    0% {
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+    100% {
+        text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+    }
 } 

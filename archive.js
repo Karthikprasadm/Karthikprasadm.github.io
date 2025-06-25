@@ -471,6 +471,10 @@ document.addEventListener('DOMContentLoaded', function() {
           ]);
           repos.forEach(repo => {
             if (manualNames.has(repo.name?.toLowerCase())) return;
+            // Create wrapper div to contain both card and project name
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = 'display: flex; flex-direction: column; align-items: stretch;';
+            
             // Create card
             const card = document.createElement('div');
             card.className = 'gallery-item';
@@ -505,8 +509,18 @@ document.addEventListener('DOMContentLoaded', function() {
             overlay.appendChild(techStack);
             card.appendChild(img);
             card.appendChild(overlay);
-            // Add card to gallery
-            gallery.appendChild(card);
+            
+            // Create project name element below card
+            const projectName = document.createElement('div');
+            projectName.className = 'project-name';
+            projectName.textContent = repo.name;
+            
+            // Add to wrapper
+            wrapper.appendChild(card);
+            wrapper.appendChild(projectName);
+            
+            // Add wrapper to gallery
+            gallery.appendChild(wrapper);
             // Modal click handler
             card.addEventListener('click', function(e) {
               if (e.target.tagName === 'IMG') e.preventDefault();
@@ -590,10 +604,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Add Project UI Logic ---
     const addProjectBtn = document.getElementById('addProjectBtn');
+    const addNewProjectModal = document.getElementById('addNewProjectModal');
+    const addNewProjectForm = document.getElementById('addNewProjectForm');
     const addProjectModal = document.getElementById('addProjectModal');
     const closeAddProjectModal = document.getElementById('closeAddProjectModal');
     const addProjectForm = document.getElementById('addProjectForm');
     const cancelAddProject = document.getElementById('cancelAddProject');
+    const addEditProjectTitle = document.getElementById('addEditProjectTitle');
 
     // --- Password protection for Add Project ---
     const passwordModal = document.getElementById('passwordModal');
@@ -605,61 +622,72 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const PROJECT_PASSWORD = 'Wingspawn@2728'; // Change as needed
 
+    const deleteProjectBtn = document.getElementById('deleteProjectBtn');
+
     addProjectBtn.addEventListener('click', function(e) {
       e.preventDefault();
       passwordInput.value = '';
       passwordError.style.display = 'none';
       passwordModal.style.display = 'flex';
       passwordInput.focus();
-    });
-    closePasswordModal.addEventListener('click', function() {
-      passwordModal.style.display = 'none';
-    });
-    cancelPassword.addEventListener('click', function() {
-      passwordModal.style.display = 'none';
-    });
-    passwordForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      if (passwordInput.value === PROJECT_PASSWORD) {
-        passwordModal.style.display = 'none';
-        addProjectModal.style.display = 'flex';
-      } else {
-        passwordError.style.display = 'block';
-        passwordInput.value = '';
-        passwordInput.focus();
-      }
+      // Set up password form to open ADD modal (not edit modal)
+      passwordForm.onsubmit = function(e) {
+        e.preventDefault();
+        if (passwordInput.value === PROJECT_PASSWORD) {
+          passwordModal.style.display = 'none';
+          addNewProjectModal.style.display = 'flex';
+          addNewProjectForm.reset();
+        } else {
+          passwordError.style.display = 'block';
+          passwordInput.value = '';
+          passwordInput.focus();
+        }
+      };
     });
 
-    // Close modal
-    closeAddProjectModal.addEventListener('click', () => {
-      addProjectModal.style.display = 'none';
-    });
-    cancelAddProject.addEventListener('click', () => {
-      addProjectModal.style.display = 'none';
-    });
-    // Add project to gallery
-    addProjectForm.addEventListener('submit', function(e) {
+    // Handle Add New Project form submission
+    addNewProjectForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      const name = document.getElementById('newProjectName').value.trim();
-      const thumbnail = document.getElementById('newProjectThumbnail').value.trim();
-      const img = document.getElementById('newProjectImg').value.trim();
-      const video = document.getElementById('newProjectVideo').value.trim();
-      const desc = document.getElementById('newProjectDesc').value.trim();
-      const tech = document.getElementById('newProjectTech').value.split(',').map(t => t.trim()).filter(Boolean);
-      const readme = document.getElementById('newProjectReadme').value.trim();
+      const name = document.getElementById('newProjectNameAdd').value.trim();
+      const thumbnail = document.getElementById('newProjectThumbnailAdd').value.trim();
+      const img = document.getElementById('newProjectImgAdd').value.trim();
+      const video = document.getElementById('newProjectVideoAdd').value.trim();
+      const desc = document.getElementById('newProjectDescAdd').value.trim();
+      const tech = document.getElementById('newProjectTechAdd').value.split(',').map(t => t.trim()).filter(Boolean);
+      const readme = document.getElementById('newProjectReadmeAdd').value.trim();
       const newProject = { name, thumbnail, img, video, desc, tech, readme };
       // Save to localStorage
       let userProjects = JSON.parse(localStorage.getItem('userProjects') || '[]');
       userProjects.push(newProject);
       localStorage.setItem('userProjects', JSON.stringify(userProjects));
       // Add to gallery
-      addProjectToGallery(newProject);
-      addProjectModal.style.display = 'none';
-      addProjectForm.reset();
+      addProjectToGallery(newProject, userProjects.length - 1);
+      addNewProjectModal.style.display = 'none';
+      addNewProjectForm.reset();
     });
+
+    // Keep edit modal logic separate
+    closeAddProjectModal.addEventListener('click', () => {
+      addProjectModal.style.display = 'none';
+      addEditProjectTitle.textContent = 'Edit Project';
+      addProjectForm.reset();
+      deleteProjectBtn.style.display = 'none';
+    });
+    cancelAddProject.addEventListener('click', () => {
+      addProjectModal.style.display = 'none';
+      addEditProjectTitle.textContent = 'Edit Project';
+      addProjectForm.reset();
+      deleteProjectBtn.style.display = 'none';
+    });
+
     // Add project card to gallery
     function addProjectToGallery(data, idx = null) {
       const gallery = document.getElementById('gallery');
+      
+      // Create wrapper div to contain both card and project name
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'display: flex; flex-direction: column; align-items: stretch;';
+      
       const card = document.createElement('div');
       card.className = 'gallery-item';
       card.setAttribute('data-category', 'project');
@@ -690,6 +718,16 @@ document.addEventListener('DOMContentLoaded', function() {
       overlay.appendChild(p);
       overlay.appendChild(techDiv);
       card.appendChild(overlay);
+      
+      // Create project name element below card
+      const projectName = document.createElement('div');
+      projectName.className = 'project-name';
+      projectName.textContent = data.name;
+      
+      // Add to wrapper
+      wrapper.appendChild(card);
+      wrapper.appendChild(projectName);
+      
       // Add modal click handler (reuse modal logic)
       card.addEventListener('click', function(e) {
         if (e.target.tagName === 'IMG' || e.target.classList.contains('edit-btn') || e.target.classList.contains('delete-btn')) return;
@@ -738,6 +776,7 @@ document.addEventListener('DOMContentLoaded', function() {
             renderUserProjects();
             addProjectModal.style.display = 'none';
             addProjectForm.reset();
+            addEditProjectTitle.textContent = 'Add New Project';
             addProjectForm.onsubmit = defaultAddProjectSubmit;
           };
         };
@@ -770,7 +809,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btnWrap.appendChild(deleteBtn);
         card.appendChild(btnWrap);
       }
-      gallery.appendChild(card);
+      gallery.appendChild(wrapper);
     }
     // Render all user projects (clear and re-add)
     function renderUserProjects() {
@@ -868,6 +907,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (passwordInput.value === PROJECT_PASSWORD) {
               passwordModal.style.display = 'none';
               addProjectModal.style.display = 'flex';
+              addEditProjectTitle.textContent = 'Edit Project';
+              deleteProjectBtn.style.display = 'inline-block';
               document.getElementById('newProjectName').value = currentProjectData.name;
               document.getElementById('newProjectThumbnail').value = currentProjectData.thumbnail || '';
               document.getElementById('newProjectImg').value = currentProjectData.img || '';
@@ -900,13 +941,16 @@ document.addEventListener('DOMContentLoaded', function() {
                   renderUserProjects();
                 }
                 addProjectModal.style.display = 'none';
+                addEditProjectTitle.textContent = 'Add New Project';
                 addProjectForm.reset();
                 addProjectForm.onsubmit = defaultAddProjectSubmit;
+                deleteProjectBtn.style.display = 'none';
               };
             } else {
               passwordError.style.display = 'block';
               passwordInput.value = '';
               passwordInput.focus();
+              deleteProjectBtn.style.display = 'none';
             }
           };
         };
@@ -954,5 +998,46 @@ document.addEventListener('DOMContentLoaded', function() {
       localStorage.setItem('githubToken', githubTokenInput.value.trim());
       githubTokenModal.style.display = 'none';
       fetchAndDisplayGithubProjects();
+    });
+
+    // --- BRUTE FORCE: Password Modal Close Handler ---
+    setInterval(function() {
+      const passwordModal = document.getElementById('passwordModal');
+      const closeBtn = document.getElementById('closePasswordModal');
+      
+      if (passwordModal && closeBtn) {
+        // Force attach click handler every 100ms
+        closeBtn.onclick = function() {
+          passwordModal.style.display = 'none';
+          document.body.style.overflow = '';
+        };
+        
+        // Also check if modal is visible and ESC is pressed
+        document.onkeydown = function(e) {
+          if (e.key === 'Escape' && passwordModal.style.display === 'flex') {
+            passwordModal.style.display = 'none';
+            document.body.style.overflow = '';
+          }
+        };
+      }
+    }, 100);
+
+    // --- Password Modal Universal Close Logic ---
+    document.addEventListener('click', function(e) {
+      const passwordModal = document.getElementById('passwordModal');
+      if (!passwordModal) return;
+      // X button
+      if (e.target && e.target.id === 'closePasswordModal') {
+        passwordModal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+      // Click outside modal content
+      if (
+        e.target === passwordModal &&
+        passwordModal.style.display === 'flex'
+      ) {
+        passwordModal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
     });
 }); 
